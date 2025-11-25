@@ -1,19 +1,23 @@
-// components/FeaturedCourses.js
 import React from 'react';
 import CourseCard from '../Card/CourseCard';
+import { useNavigate } from 'react-router-dom';
 
 const FeaturedCourses = () => {
+  const navigate= useNavigate();
+  const ExploreCousers = () => {
+        navigate('/viewCourses');
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
   const courses = [
     {
       id: 1,
       title: "Web Development Bootcamp",
-      description: "Master HTML, CSS, JavaScript and modern frameworks in this comprehensive course.",
+      description: "Master in HTML, CSS, JavaScript, frameworks in this course.",
       rating: "4.8",
       duration: "42 hours",
       price: "$89.99",
       badge: "Bestseller",
-      gradientFrom: "#3b82f6",
-      gradientTo: "#1d4ed8"
+      thumbnail:"https://media.istockphoto.com/id/2215674535/photo/young-asian-software-development-manager-leads-a-late-night-office-discussion-with-his.jpg?s=2048x2048&w=is&k=20&c=OueOn75ZgEbe0bUfWu0XDOmmPci7j8Dvd7Y72L4hg5k="
     },
     {
       id: 2,
@@ -23,8 +27,7 @@ const FeaturedCourses = () => {
       duration: "56 hours",
       price: "$99.99",
       badge: "New",
-      gradientFrom: "#60a5fa",
-      gradientTo: "#3b82f6"
+      thumbnail:"https://media.istockphoto.com/id/2148028007/photo/laptop-in-the-front-business-coach-against-projector-with-data.jpg?s=2048x2048&w=is&k=20&c=0ozXR1dlocQF4xX7tP5FHq70KizIUPT_M6iHaNUeJ7M="
     },
     {
       id: 3,
@@ -34,8 +37,7 @@ const FeaturedCourses = () => {
       duration: "38 hours",
       price: "$79.99",
       badge: "Popular",
-      gradientFrom: "#2563eb",
-      gradientTo: "#1e40af"
+      thumbnail:"https://images.unsplash.com/photo-1542626991-cbc4e32524cc?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     }
   ];
 
@@ -61,13 +63,12 @@ const FeaturedCourses = () => {
               duration={course.duration}
               price={course.price}
               badge={course.badge}
-              gradientFrom={course.gradientFrom}
-              gradientTo={course.gradientTo}
+              bgImage={course.thumbnail}
             />
           ))}
         </div>
         
-        <div className="text-center mt-12">
+        <div className="text-center mt-12" onClick={ExploreCousers}>
           <button className="px-8 py-3 bg-white border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition font-medium">
             View All Courses
           </button>

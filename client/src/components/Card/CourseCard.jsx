@@ -1,22 +1,30 @@
-// components/CourseCard.js
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const CourseCard = ({ 
-  title, 
-  description, 
-  rating, 
-  duration, 
-  price, 
-  badge, 
-  gradientFrom, 
-  gradientTo 
+const CourseCard = ({
+  title,
+  description,
+  rating,
+  duration,
+  price,
+  badge,
+  bgImage
 }) => {
+  const navigate = useNavigate();
+  const goToCourses = () => {
+    navigate('/courseDetail');
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition">
-      <div 
+    <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition"
+      onClick={goToCourses}>
+      <div
         className="h-48 relative"
-        style={{ 
-          background: `linear-gradient(to right, ${gradientFrom}, ${gradientTo})` 
+        style={{
+          background: `url(${bgImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat"
         }}
       >
         {badge && (
@@ -40,9 +48,6 @@ const CourseCard = ({
           </div>
           <div className="text-blue-600 font-bold">{price}</div>
         </div>
-        <button className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition">
-          Enroll Now
-        </button>
       </div>
     </div>
   );

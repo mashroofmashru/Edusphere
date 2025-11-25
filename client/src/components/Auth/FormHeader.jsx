@@ -6,7 +6,7 @@ const FormHeader = ({ title, subtitle }) => {
     <div className="form-header">
       <div className="logo">
         <i className="fas fa-graduation-cap logo-icon"></i>
-        <span className="logo-text">LearnHub</span>
+        <span className="logo-text">Eduphere</span>
       </div>
       <h2 className="form-title">{title}</h2>
       <p className="form-subtitle">{subtitle}</p>

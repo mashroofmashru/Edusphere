@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 const Navbar = () => {
+  const navigate=useNavigate()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   const navLinks = [
-    { label: 'Home', href: '#' },
-    { label: 'Courses', href: '#' },
-    { label: 'Instructors', href: '#' },
-    { label: 'Resources', href: '#' },
-    { label: 'About', href: '#' },
+    { label: 'Home', href: '/' },
+    { label: 'Courses', href: '/viewCourses' },
+    // { label: 'Instructors', href: '#' },
+    // { label: 'Resources', href: '#' },
+    { label: 'About', href: '/about' },
   ];
 
   return (
@@ -18,7 +18,7 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center">
             <i className="fas fa-graduation-cap text-2xl text-blue-400 mr-2"></i>
-            <span className="text-xl font-bold">LearnHub</span>
+            <span className="text-xl font-bold">EduVerse</span>
           </div>
           
           {/* Desktop Menu */}
@@ -36,11 +36,8 @@ const Navbar = () => {
           
           {/* Auth Buttons */}
           <div className="hidden md:flex space-x-4">
-            <button className="px-4 py-2 rounded hover:bg-blue-700 transition">
+            <button className="px-4 py-2 rounded hover:bg-blue-700 transition bg-blue-600" onClick={()=>navigate("/login")}>
               Log In
-            </button>
-            <button className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-500 transition">
-              Sign Up
             </button>
           </div>
           
@@ -67,11 +64,8 @@ const Navbar = () => {
             </a>
           ))}
           <div className="mt-4 pt-4 border-t border-gray-700">
-            <button className="w-full mb-2 py-2 rounded hover:bg-blue-700 transition">
+            <button className="w-full mb-2 py-2 rounded hover:bg-blue-700 transition" onClick={()=>navigate("/login")}>
               Log In
-            </button>
-            <button className="w-full py-2 bg-blue-600 rounded hover:bg-blue-500 transition">
-              Sign Up
             </button>
           </div>
         </div>

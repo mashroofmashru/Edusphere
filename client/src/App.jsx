@@ -1,24 +1,19 @@
-import { useEffect, useState } from 'react';
+import { Routes, Route } from 'react-router-dom'
+
+//imported elements
 import Home from './pages/Home';
-import Loginsignup from './pages/LoginSignup';
+import AuthSignup from './pages/LoginSignup';
+import ExploreCourses from './pages/ExploreCourses';
+import CourseDetail from './pages/CourseDetail';
+import About from './pages/About';
 export default function App() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    // Call Express directly (CORS enabled above)
-    fetch('http://localhost:3000/')
-      .then((r) => r.json())
-      .then((data) => setUsers(data))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) return <p>Loading…</p>;
-
   return (
-    <main>
-      {/* <Home/> */}
-      <Loginsignup/>
-    </main>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<AuthSignup />} />
+      <Route path='/viewCourses' element={<ExploreCourses/>}/>
+      <Route path='/courseDetail' element={<CourseDetail/>}/>
+      <Route path='/about' element={<About/>}/>
+    </Routes>
   );
 }
