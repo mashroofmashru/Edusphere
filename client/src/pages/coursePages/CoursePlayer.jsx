@@ -4,6 +4,7 @@ import api from '../../config/server';
 import PlayerSidebar from '../../components/CoursePlayer/PlayerSidebar';
 import VideoPlayer from '../../components/CoursePlayer/VideoPlayer';
 import QuizPlayer from '../../components/CoursePlayer/QuizPlayer';
+import AIChat from '../../components/CoursePlayer/AIChat';
 
 const CoursePlayer = () => {
     const { id } = useParams();
@@ -95,8 +96,8 @@ const CoursePlayer = () => {
                                 <button
                                     onClick={() => handleToggleComplete(activeLesson._id)}
                                     className={`px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2 ${progress.completedLessons.includes(activeLesson._id)
-                                            ? 'bg-green-100 text-green-700 hover:bg-green-200 shadow-sm shadow-green-100'
-                                            : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200'
+                                        ? 'bg-green-100 text-green-700 hover:bg-green-200 shadow-sm shadow-green-100'
+                                        : 'bg-navy-900 text-white hover:bg-blue-900 shadow-lg shadow-navy-100'
                                         }`}
                                 >
                                     {progress.completedLessons.includes(activeLesson._id) ? (
@@ -154,6 +155,9 @@ const CoursePlayer = () => {
                     </div>
                 </div>
             </div>
+
+            {/* AI Assistant */}
+            <AIChat course={course} activeLesson={activeLesson} />
         </div>
     );
 };

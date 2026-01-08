@@ -25,11 +25,22 @@ const CourseDetail = () => {
 
     useEffect(() => {
         const query = new URLSearchParams(window.location.search);
+        const sessionId = query.get("session_id");
+
         if (query.get("status") === "success") {
-            // Updated UX: Clear URL and confirm enrollment
-            setIsEnrolled(true); // Optimistically set enrolled
-            navigate(window.location.pathname, { replace: true });
-            // Optionally show a toast here via a library if available, relying on optimistic update for now
+            if (sessionId) {
+                // Verify payment server-side explicitly (fallback for webhook)
+                api.post('/payment/verify-session', { sessionId })
+                    .then(() => {
+                        setIsEnrolled(true);
+                        navigate(window.location.pathname, { replace: true });
+                    })
+                    .catch(err => console.error("Verification failed", err));
+            } else {
+                // Fallback for older links or fast updates
+                setIsEnrolled(true);
+                navigate(window.location.pathname, { replace: true });
+            }
         }
         if (query.get("status") === "cancel") {
             alert("Payment was canceled. You haven't been charged.");

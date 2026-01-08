@@ -12,6 +12,9 @@ import CoursePlayer from './pages/coursePages/CoursePlayer';
 import AdminDashboard from './pages/adminPages/AdminDashboard';
 import Profile from './pages/userPages/Profile';
 import MyCourses from './pages/userPages/MyCourses';
+import InstructorCourses from './pages/instructorPages/InstructorCourses';
+import InstructorStudents from './pages/instructorPages/InstructorStudents';
+import InstructorReviews from './pages/instructorPages/InstructorReviews';
 
 export default function App() {
   return (
@@ -31,6 +34,9 @@ export default function App() {
       {/* Instructor Router */}
       <Route element={<ProtectedRoute allowedRoles={['instructor', 'admin']} />}>
         <Route path="/instructor" element={<InstructorDashboard />} />
+        <Route path="/instructor/courses" element={<InstructorCourses />} />
+        <Route path="/instructor/students" element={<InstructorStudents />} />
+        <Route path="/instructor/reviews" element={<InstructorReviews />} />
       </Route>
 
       {/* admin Roters */}

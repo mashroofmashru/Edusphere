@@ -42,7 +42,7 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex space-x-4 items-center">
-            {isAuthenticated ? (
+            {user ? (
               <div className="relative">
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}

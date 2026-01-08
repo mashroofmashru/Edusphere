@@ -16,11 +16,14 @@ const Sidebar = () => {
           <Link to="/instructor" className="flex items-center p-3 bg-blue-600 rounded-lg text-white hover:bg-blue-700 transition">
             <i className="fas fa-home mr-3"></i> Dashboard
           </Link>
-          <Link to="/instructor" className="flex items-center p-3 hover:bg-gray-800 rounded-lg transition text-gray-300 hover:text-white">
+          <Link to="/instructor/courses" className="flex items-center p-3 hover:bg-gray-800 rounded-lg transition text-gray-300 hover:text-white">
             <i className="fas fa-play-circle mr-3"></i> My Courses
           </Link>
-          <Link to="/instructor" className="flex items-center p-3 hover:bg-gray-800 rounded-lg transition text-gray-300 hover:text-white">
-            <i className="fas fa-chart-line mr-3"></i> Analytics
+          <Link to="/instructor/students" className="flex items-center p-3 hover:bg-gray-800 rounded-lg transition text-gray-300 hover:text-white">
+            <i className="fas fa-users mr-3"></i> Students
+          </Link>
+          <Link to="/instructor/reviews" className="flex items-center p-3 hover:bg-gray-800 rounded-lg transition text-gray-300 hover:text-white">
+            <i className="fas fa-star mr-3"></i> Reviews
           </Link>
           <Link to="/profile" className="flex items-center p-3 hover:bg-gray-800 rounded-lg transition text-gray-300 hover:text-white">
             <i className="fas fa-user mr-3"></i> Profile

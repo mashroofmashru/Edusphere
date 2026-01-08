@@ -110,5 +110,48 @@ module.exports = {
             console.error(err);
             res.status(500).json({ success: false, message: "Failed to delete course" });
         }
+    },
+    getDashboardStats: async (req, res) => {
+        try {
+            const instructorId = req.user.id;
+            const courses = await Course.find({ instructor: instructorId });
+            const courseIds = courses.map(c => c._id);
+
+            const enrollments = await Enrollment.find({ course: { $in: courseIds }, status: 'active' }).populate('course');
+
+            const totalStudents = enrollments.length;
+            const totalRevenue = enrollments.reduce((acc, curr) => acc + (curr.course.price || 0), 0);
+            const activeCourses = courses.length;
+
+            res.status(200).json({
+                success: true,
+                stats: {
+                    totalStudents,
+                    totalRevenue,
+                    activeCourses
+                }
+            });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ success: false, message: "Failed to fetch dashboard stats" });
+        }
+    },
+    getCourseReviews: async (req, res) => {
+        try {
+            const instructorId = req.user.id;
+            const Review = require('../models/reviewSchema');
+            const courses = await Course.find({ instructor: instructorId }).select('_id');
+            const courseIds = courses.map(c => c._id);
+
+            const reviews = await Review.find({ course: { $in: courseIds } })
+                .populate('user', 'name')
+                .populate('course', 'title thumbnail')
+                .sort({ createdAt: -1 });
+
+            res.status(200).json({ success: true, data: reviews });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ success: false, message: "Failed to fetch reviews" });
+        }
     }
 };

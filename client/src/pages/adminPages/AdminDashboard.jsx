@@ -178,7 +178,7 @@ const AdminDashboard = () => {
                                             {course.instructor?.name || 'Unknown'} <br />
                                             <span className="text-xs text-gray-400">{course.instructor?.email}</span>
                                         </td>
-                                        <td className="p-5 font-bold">${course.price}</td>
+                                        <td className="p-5 font-bold">₹{course.price}</td>
                                         <td className="p-5">
                                             <button
                                                 onClick={() => handleToggleStatus(course._id, course.status)}

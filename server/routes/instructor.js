@@ -13,6 +13,8 @@ router.get('/my-courses', verifyLogin, instructorHelpers.getMyCourses);
 router.get('/enrolled-students', verifyLogin, instructorHelpers.getEnrolledStudents);
 router.patch('/edit/:id', verifyLogin, upload.single('thumbnail'), instructorHelpers.updateCourse);
 router.delete('/course/:id', verifyLogin, instructorHelpers.deleteCourse);
+router.get('/dashboard-stats', verifyLogin, instructorHelpers.getDashboardStats);
+router.get('/course-reviews', verifyLogin, instructorHelpers.getCourseReviews);
 
 
 module.exports = router;

@@ -97,7 +97,7 @@ const ExploreCourses = () => {
                   description={course.subtitle || course.description} // Fallback to description
                   rating={course.rating || "New"}
                   duration={course.totalDuration ? `${Math.round(course.totalDuration / 60)} hours` : "Self-paced"}
-                  price={`$${course.price}`}
+                  price={`₹${course.price}`}
                   badge={course.level}
                   bgImage={course.thumbnail && !course.thumbnail.includes('default') ? `http://localhost:3000/${course.thumbnail.replace(/\\/g, '/')}` : 'https://via.placeholder.com/300x200'}
                 />

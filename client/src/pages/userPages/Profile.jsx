@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/Navbar/Navbar';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../config/server';
+import CertificateTemplate from '../../components/Profile/CertificateTemplate';
 
 const Profile = () => {
     const { user, logout } = useAuth();
     const [certificates, setCertificates] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedCertificate, setSelectedCertificate] = useState(null);
 
     useEffect(() => {
         const fetchCertificates = async () => {
@@ -58,67 +60,81 @@ const Profile = () => {
                                 <p className="text-[10px] text-navy-400 uppercase font-black tracking-widest mb-1.5">Email Address</p>
                                 <p className="text-navy-900 font-bold">{user.email}</p>
                             </div>
-                            <div className="p-5 bg-navy-50/30 rounded-2xl border border-navy-100">
-                                <p className="text-[10px] text-navy-400 uppercase font-black tracking-widest mb-1.5">Learning Status</p>
-                                <p className="text-navy-900 font-bold">{certificates.length} Certificates Earned</p>
-                            </div>
+                            {user.role !== 'instructor' && (
+                                <div className="p-5 bg-navy-50/30 rounded-2xl border border-navy-100">
+                                    <p className="text-[10px] text-navy-400 uppercase font-black tracking-widest mb-1.5">Learning Status</p>
+                                    <p className="text-navy-900 font-bold">{certificates.length} Certificates Earned</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
 
                 {/* Certificates Section */}
-                <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-2xl font-bold text-navy-900">My Certificates</h2>
-                        <div className="h-1 flex-1 mx-6 bg-gray-100 rounded-full"></div>
-                    </div>
-
-                    {loading ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {[1, 2].map(i => (
-                                <div key={i} className="bg-gray-100 h-48 rounded-2xl animate-pulse"></div>
-                            ))}
+                {/* Certificates Section - Hidden for Instructors */}
+                {user.role !== 'instructor' && (
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-2xl font-bold text-navy-900">My Certificates</h2>
+                            <div className="h-1 flex-1 mx-6 bg-gray-100 rounded-full"></div>
                         </div>
-                    ) : certificates.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {certificates.map(cert => (
-                                <div key={cert._id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition group overflow-hidden relative">
-                                    <div className="absolute top-0 right-0 w-24 h-24 bg-amber-50 rounded-bl-full -mr-12 -mt-12 group-hover:bg-amber-100 transition"></div>
-                                    <i className="fas fa-certificate absolute top-4 right-4 text-amber-500 text-2xl group-hover:scale-110 transition-transform"></i>
 
-                                    <div className="relative z-10 flex flex-col h-full">
-                                        <div className="flex-1">
-                                            <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-2">Completion Certificate</p>
-                                            <h3 className="text-xl font-bold text-navy-900 mb-2 line-clamp-2">{cert.course?.title}</h3>
-                                            <p className="text-xs text-gray-400 font-medium">Issued on {new Date(cert.issuedAt).toLocaleDateString()}</p>
-                                        </div>
-                                        <div className="mt-6 flex items-center justify-between">
-                                            <span className="text-[10px] font-mono text-gray-300">ID: {cert.certificateId}</span>
-                                            <button className="text-blue-600 font-bold text-sm hover:underline flex items-center gap-1">
-                                                View <i className="fas fa-external-link-alt text-[10px]"></i>
-                                            </button>
+                        {loading ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {[1, 2].map(i => (
+                                    <div key={i} className="bg-gray-100 h-48 rounded-2xl animate-pulse"></div>
+                                ))}
+                            </div>
+                        ) : certificates.length > 0 ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {certificates.map(cert => (
+                                    <div key={cert._id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition group overflow-hidden relative">
+                                        <div className="absolute top-0 right-0 w-24 h-24 bg-amber-50 rounded-bl-full -mr-12 -mt-12 group-hover:bg-amber-100 transition"></div>
+                                        <i className="fas fa-certificate absolute top-4 right-4 text-amber-500 text-2xl group-hover:scale-110 transition-transform"></i>
+
+                                        <div className="relative z-10 flex flex-col h-full">
+                                            <div className="flex-1">
+                                                <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-2">Completion Certificate</p>
+                                                <h3 className="text-xl font-bold text-navy-900 mb-2 line-clamp-2">{cert.course?.title}</h3>
+                                                <p className="text-xs text-gray-400 font-medium">Issued on {new Date(cert.issuedAt).toLocaleDateString()}</p>
+                                            </div>
+                                            <div className="mt-6 flex items-center justify-between">
+                                                <span className="text-[10px] font-mono text-gray-300">ID: {cert.certificateId}</span>
+                                                <button
+                                                    onClick={() => setSelectedCertificate(cert)}
+                                                    className="text-blue-600 font-bold text-sm hover:underline flex items-center gap-1"
+                                                >
+                                                    View <i className="fas fa-external-link-alt text-[10px]"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="bg-white p-12 rounded-3xl border-2 border-dashed border-gray-200 text-center">
-                            <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-200">
-                                <i className="fas fa-award text-4xl"></i>
+                                ))}
                             </div>
-                            <h3 className="text-xl font-bold text-navy-900 mb-2">No certificates yet</h3>
-                            <p className="text-gray-400 max-w-xs mx-auto text-sm">Complete a course 100% to earn your professional certification.</p>
-                            <button className="mt-6 px-6 py-2 bg-navy-900 text-white font-bold rounded-xl shadow-lg shadow-navy-100 hover:bg-blue-900 transition text-sm">
-                                Explore Courses
-                            </button>
-                        </div>
-                    )}
-                </div>
+                        ) : (
+                            <div className="bg-white p-12 rounded-3xl border-2 border-dashed border-gray-200 text-center">
+                                <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-200">
+                                    <i className="fas fa-award text-4xl"></i>
+                                </div>
+                                <h3 className="text-xl font-bold text-navy-900 mb-2">No certificates yet</h3>
+                                <p className="text-gray-400 max-w-xs mx-auto text-sm">Complete a course 100% to earn your professional certification.</p>
+                                <button className="mt-6 px-6 py-2 bg-navy-900 text-white font-bold rounded-xl shadow-lg shadow-navy-100 hover:bg-blue-900 transition text-sm">
+                                    Explore Courses
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
+            {selectedCertificate && (
+                <CertificateTemplate
+                    certificate={selectedCertificate}
+                    user={user}
+                    onClose={() => setSelectedCertificate(null)}
+                />
+            )}
         </div>
     );
 };
 
 export default Profile;
-

@@ -29,24 +29,24 @@ const SignupForm = ({ onFlip }) => {
     setLoading(true);
 
     try {
-      const res = await api.post('/auth/dosignup', {
+      const { data } = await api.post('/auth/dosignup', {
         name: name,
         email: email,
         password: password,
         role: isInstructor ? 'instructor' : 'user'
       });
 
-      if (res.data.success) {
-        login(res.data.data, res.data.token);
-        if (res.data.data.role === "admin")
+      if (data.success) {
+        console.log("success:" + data.data.role)
+        login(data.data, data.token);
+        if (data.data.role === "admin")
           navigate("/admin");
-        else if (res.data.data.role === "dealer")
+        else if (data.data.role === "dealer")
           navigate("/dealer");
         else navigate("/");
       }
-      console.log('Server Response:', res.data);
+      console.log('Server Response:', data);
       alert('Account created successfully!');
-      login()
     } catch (err) {
       const errMsg = err.response?.data?.message || "An error occurred during signup";
       setError(errMsg);

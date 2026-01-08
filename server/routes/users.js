@@ -20,4 +20,7 @@ router.post('/course/:id/certificate', verifyLogin, userHelpers.issueCertificate
 
 router.get('/certificates', verifyLogin, userHelpers.getMyCertificates);
 
+const aiController = require('../controllers/aiController');
+router.post('/ai-chat', verifyLogin, aiController.chatWithAI);
+
 module.exports = router;
