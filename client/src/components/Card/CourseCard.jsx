@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const CourseCard = ({
+  id,
   title,
   description,
   rating,
@@ -12,7 +13,7 @@ const CourseCard = ({
 }) => {
   const navigate = useNavigate();
   const goToCourses = () => {
-    navigate('/courseDetail');
+    navigate(`/course/${id}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   return (

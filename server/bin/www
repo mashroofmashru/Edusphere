@@ -7,6 +7,11 @@
 var app = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
+const dotenv = require("dotenv");
+const { connectDB } = require("../config/db");
+
+// Load env
+dotenv.config();
 
 /**
  * Get port from environment and store in Express.
@@ -22,10 +27,24 @@ app.set('port', port);
 var server = http.createServer(app);
 
 /**
- * Listen on provided port, on all network interfaces.
+ * Connect DB, then start server.
  */
 
-server.listen(port);
+(async () => {
+  try {
+    await connectDB();
+    server.listen(port, () => {
+      console.log(`🚀 Server running on http://localhost:${port}`);
+    });
+
+    server.on("error", onError);
+    server.on("listening", onListening);
+  } catch (err) {
+    console.error("Failed to start server:", err.message);
+    process.exit(1);
+  }
+})();
+
 server.on('error', onError);
 server.on('listening', onListening);
 

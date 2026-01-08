@@ -1,5 +1,5 @@
 // In your main App component or route
-import AuthContainer from "../components/Auth/AuthContainer";
+import AuthContainer from "../../components/Auth/AuthContainer";
 
 function Loginsignup() {
   return (

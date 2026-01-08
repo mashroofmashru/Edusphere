@@ -1,4 +1,3 @@
-// components/Auth/InputField.jsx
 import React, { useState } from 'react';
 
 const InputField = ({ 
@@ -18,7 +17,7 @@ const InputField = ({
       <label className="form-label" htmlFor={id}>
         {label}
       </label>
-      <div className="input-container">
+      <div className={`input-container ${isFocused ? 'focused' : ''}`}>
         <i 
           className={`fas fa-${icon} input-icon`}
           style={{ color: isFocused ? '#2563eb' : '#64748b' }}
@@ -29,6 +28,7 @@ const InputField = ({
           className="form-input"
           placeholder={placeholder}
           value={value}
+          // Extracts the value here so the parent doesn't have to deal with 'e.target'
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
