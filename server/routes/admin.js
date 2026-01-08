@@ -14,7 +14,7 @@ router.get('/stats', verifyLogin, verifyAdmin, adminHelpers.getPlatformStats);
 router.get('/enrollments', verifyLogin, verifyAdmin, adminHelpers.getAllEnrollments);
 
 // Category Management
-router.get('/categories', adminHelpers.getAllCategories); // Public potentially, but admin can manage
+router.get('/categories', adminHelpers.getAllCategories);
 router.post('/categories', verifyLogin, verifyAdmin, adminHelpers.addCategory);
 router.delete('/categories/:id', verifyLogin, verifyAdmin, adminHelpers.deleteCategory);
 

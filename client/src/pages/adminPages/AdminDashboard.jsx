@@ -33,7 +33,7 @@ const AdminDashboard = () => {
             setCourses(coursesRes.data.data || []);
             setCategories(categoriesRes.data.data || []);
             setStats(statsRes.data.data || { users: 0, courses: 0, revenue: 0 });
-            setEnrollments(enrollmentsRes.data.data || []); // Added
+            setEnrollments(enrollmentsRes.data.data || []);
         } catch (err) {
             console.error("Failed to fetch admin data", err);
             setNotification({ show: true, message: "Failed to load data", type: "error" });

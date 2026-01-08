@@ -6,7 +6,7 @@ let model;
 const initGemini = () => {
     if (process.env.GEMINI_API_KEY && !genAI) {
         genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     }
     return model;
 };
@@ -28,7 +28,6 @@ module.exports = {
                 return res.status(500).json({ success: false, message: "Failed to initialize AI model." });
             }
 
-            // Construct a prompt that gives the AI context
             const systemPrompt = `You are a helpful AI tutor for the course "${courseTitle}".
             Here is some context about the course: "${context}".
             Please answer the student's question based on this context if relevant, but feel free to use your general knowledge to explain concepts clearly.

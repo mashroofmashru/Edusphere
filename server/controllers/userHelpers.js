@@ -21,13 +21,11 @@ const enrollUserInCourse = async (userId, courseId, paymentId = null) => {
         }
     }
 
-    // Update Course students array (for easy lookup/count)
     if (!course.enrolledStudents.includes(userId)) {
         course.enrolledStudents.push(userId);
         await course.save();
     }
 
-    // Update User enrolled courses array (for easy lookup)
     await User.findByIdAndUpdate(userId, { $addToSet: { enrolledCourses: courseId } });
 };
 
@@ -44,32 +42,11 @@ module.exports = {
             }
 
             let isEnrolled = false;
-            // Check enrollment logic if user is logged in
-            // Note: req.user might be attached by middleware if authenticated
-            // We usually can't rely on req.user in a public route unless verifyLogin is optional or checked
-            // Assuming this route might be public, we need to handle auth check safely
-            // However, typically CourseDetail fetches via an authenticated endpoint if we want isEnrolled
-
-            // Checking if the legacy array has it as fallback, but better to check Enrollment if we have user
-            // In the current route structure, verifyLogin might be middleware. 
-            // If the route is public, req.user is undefined.
-            // If the frontend sends token, we might have req.user.
-
-            // To be safe, we can leave the client logic or perform a check if req.user exists.
 
             if (req.user) {
                 const enrollment = await Enroll.findOne({ user: req.user.id, course: req.params.id, status: 'active' });
                 isEnrolled = !!enrollment;
-            } else {
-                // Fallback to array check if generic public access
-                // But array check relies on user ID which we don't have.
-                // So isEnrolled remains false.
             }
-
-            // We return the course as data, but let's append isEnrolled to the response object or data
-            // To avoid breaking existing structure, we can add it to the data object if it's a POJO, 
-            // or just add it alongside data.
-            // course is Mongoose document, need .toObject() or leand() to modify if we want to embed it.
 
             const courseData = course.toObject();
             courseData.isEnrolled = isEnrolled;
@@ -95,7 +72,6 @@ module.exports = {
             const courses = await Course.find(query)
                 .select('title subtitle price thumbnail category rating instructor')
                 .populate('instructor', 'name');
-            console.log(courses)
             res.status(200).json({ success: true, data: courses });
         } catch (err) {
             console.error(err);
