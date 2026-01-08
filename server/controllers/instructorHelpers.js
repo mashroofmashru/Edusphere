@@ -8,7 +8,7 @@ module.exports = {
                 sections: JSON.parse(req.body.sections),
 
                 thumbnail: req.file ? req.file.path : 'default.jpg',
-                instructor: req.user?.id || '64b0f1a2e4b0f1a2e4b0f1a2' // Valid dummy ObjectId
+                instructor: req.user?.id || '64b0f1a2e4b0f1a2e4b0f1a2'
             };
 
             const newCourse = await Course.create(courseData);
@@ -23,7 +23,6 @@ module.exports = {
             if (!req.file) {
                 return res.status(400).json({ success: false, message: "No video file uploaded" });
             }
-            // Return the full path or relative path accessible via static serve
             const videoUrl = `${req.file.path.replace(/\\/g, "/")}`;
             res.status(200).json({ success: true, url: videoUrl });
         } catch (err) {
@@ -114,21 +113,28 @@ module.exports = {
     getDashboardStats: async (req, res) => {
         try {
             const instructorId = req.user.id;
+            const Review = require('../models/reviewSchema');
             const courses = await Course.find({ instructor: instructorId });
             const courseIds = courses.map(c => c._id);
 
             const enrollments = await Enrollment.find({ course: { $in: courseIds }, status: 'active' }).populate('course');
+            const reviews = await Review.find({ course: { $in: courseIds } });
 
             const totalStudents = enrollments.length;
             const totalRevenue = enrollments.reduce((acc, curr) => acc + (curr.course.price || 0), 0);
             const activeCourses = courses.length;
+
+            const totalRating = reviews.reduce((acc, curr) => acc + curr.rating, 0);
+            const averageRating = reviews.length > 0 ? (totalRating / reviews.length).toFixed(1) : 0;
 
             res.status(200).json({
                 success: true,
                 stats: {
                     totalStudents,
                     totalRevenue,
-                    activeCourses
+                    activeCourses,
+                    averageRating,
+                    totalReviews: reviews.length
                 }
             });
         } catch (err) {

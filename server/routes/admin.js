@@ -11,6 +11,7 @@ router.patch('/courses/:id/status', verifyLogin, verifyAdmin, adminHelpers.updat
 router.delete('/courses/:id', verifyLogin, verifyAdmin, adminHelpers.deleteCourse);
 
 router.get('/stats', verifyLogin, verifyAdmin, adminHelpers.getPlatformStats);
+router.get('/enrollments', verifyLogin, verifyAdmin, adminHelpers.getAllEnrollments);
 
 // Category Management
 router.get('/categories', adminHelpers.getAllCategories); // Public potentially, but admin can manage

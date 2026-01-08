@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'admin', 'instructor'],
     default: 'user'
   },
+  headline: { type: String, trim: true },
+  bio: { type: String, trim: true },
+  website: { type: String, trim: true },
+  linkedin: { type: String, trim: true },
   password: {
     type: String,
     required: [true, 'Password is required'],

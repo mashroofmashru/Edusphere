@@ -15,6 +15,7 @@ import MyCourses from './pages/userPages/MyCourses';
 import InstructorCourses from './pages/instructorPages/InstructorCourses';
 import InstructorStudents from './pages/instructorPages/InstructorStudents';
 import InstructorReviews from './pages/instructorPages/InstructorReviews';
+import InstructorSettings from './pages/instructorPages/InstructorSettings';
 
 export default function App() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
         <Route path="/instructor/courses" element={<InstructorCourses />} />
         <Route path="/instructor/students" element={<InstructorStudents />} />
         <Route path="/instructor/reviews" element={<InstructorReviews />} />
+        <Route path="/instructor/settings" element={<InstructorSettings />} />
       </Route>
 
       {/* admin Roters */}

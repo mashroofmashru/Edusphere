@@ -20,6 +20,10 @@ router.post('/course/:id/certificate', verifyLogin, userHelpers.issueCertificate
 
 router.get('/certificates', verifyLogin, userHelpers.getMyCertificates);
 
+// Profile management
+router.get('/profile', verifyLogin, userHelpers.getProfile);
+router.put('/profile/update', verifyLogin, userHelpers.updateProfile);
+
 const aiController = require('../controllers/aiController');
 router.post('/ai-chat', verifyLogin, aiController.chatWithAI);
 

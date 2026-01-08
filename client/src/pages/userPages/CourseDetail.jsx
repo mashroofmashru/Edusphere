@@ -4,9 +4,6 @@ import api from "../../config/server";
 import { useAuth } from "../../context/AuthContext";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
-import CourseHeader from "../../components/CouseDetail/CouseHeader";
-import Curriculum from "../../components/CouseDetail/Curriculum";
-import EnrollmentCard from "../../components/CouseDetail/EntrolmentCard";
 import InstructorCard from "../../components/CouseDetail/InstructorCard";
 import EnrollmentModal from "../../components/CouseDetail/EntrolmentModel";
 
@@ -29,7 +26,6 @@ const CourseDetail = () => {
 
         if (query.get("status") === "success") {
             if (sessionId) {
-                // Verify payment server-side explicitly (fallback for webhook)
                 api.post('/payment/verify-session', { sessionId })
                     .then(() => {
                         setIsEnrolled(true);
@@ -37,7 +33,6 @@ const CourseDetail = () => {
                     })
                     .catch(err => console.error("Verification failed", err));
             } else {
-                // Fallback for older links or fast updates
                 setIsEnrolled(true);
                 navigate(window.location.pathname, { replace: true });
             }
@@ -59,11 +54,10 @@ const CourseDetail = () => {
                 setCourse(courseRes.data.data);
                 setReviews(reviewsRes.data.data);
 
-                // Use server-side enrollment status if available
                 if (courseRes.data.data.isEnrolled !== undefined) {
                     setIsEnrolled(courseRes.data.data.isEnrolled);
                 } else if (user && courseRes.data.data.enrolledStudents) {
-                    // Fallback for backward compatibility
+
                     const userId = user._id || user.id;
                     const isUserEnrolled = courseRes.data.data.enrolledStudents.some(student =>
                         (student._id || student.id || student).toString() === userId.toString()
@@ -86,7 +80,6 @@ const CourseDetail = () => {
         setReviewLoading(true);
         try {
             const { data } = await api.post(`/users/course/${id}/review`, newReview);
-            // Refresh reviews and course data (for average rating)
             const [courseRes, reviewsRes] = await Promise.all([
                 api.get(`/users/course/${id}`),
                 api.get(`/users/course/${id}/reviews`)
@@ -124,7 +117,7 @@ const CourseDetail = () => {
             } else {
                 await api.post(`/users/course/${id}/enroll`);
                 setIsEnrolled(true);
-                navigate(`/course/${id}/learn`); // Redirect to player after enrollment
+                navigate(`/course/${id}/learn`);
             }
         } catch (error) {
             console.error("Enrollment failed", error);
@@ -169,8 +162,7 @@ const CourseDetail = () => {
                                 </div>
                             </div>
 
-                            {/* Dynamic Curriculum */}
-                            {/* ... existing curriculum ... */}
+                            {/* ... course sections ... */}
                             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                                 <h3 className="text-xl font-bold text-navy-900 mb-6">Course Content</h3>
                                 {course.sections.length > 0 ? (
@@ -297,7 +289,7 @@ const CourseDetail = () => {
                                     <li><i className="fas fa-check text-green-500 mr-2"></i> Certificate of completion</li>
                                 </ul>
                             </div>
-                            <InstructorCard />
+                            <InstructorCard instructor={course.instructor} />
                         </div>
                     </div>
                 </div>

@@ -21,17 +21,19 @@ const AdminDashboard = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [usersRes, coursesRes, statsRes, categoriesRes] = await Promise.all([
+            const [usersRes, coursesRes, statsRes, categoriesRes, enrollmentsRes] = await Promise.all([
                 api.get('/admin/users'),
                 api.get('/admin/courses'),
                 api.get('/admin/stats'),
-                api.get('/admin/categories')
+                api.get('/admin/categories'),
+                api.get('/admin/enrollments')
             ]);
 
             setUsers(usersRes.data.data || []);
             setCourses(coursesRes.data.data || []);
             setCategories(categoriesRes.data.data || []);
             setStats(statsRes.data.data || { users: 0, courses: 0, revenue: 0 });
+            setEnrollments(enrollmentsRes.data.data || []); // Added
         } catch (err) {
             console.error("Failed to fetch admin data", err);
             setNotification({ show: true, message: "Failed to load data", type: "error" });
@@ -248,7 +250,7 @@ const AdminDashboard = () => {
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                                         <input
                                             type="text"
-                                            className="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition"
+                                            className="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition"
                                             value={newCategory.name}
                                             onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
                                             placeholder="e.g. Web Development"
@@ -258,7 +260,7 @@ const AdminDashboard = () => {
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                                         <textarea
-                                            className="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-purple-500 outline-none transition min-h-[100px]"
+                                            className="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition min-h-[100px]"
                                             value={newCategory.description}
                                             onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })}
                                             placeholder="Short description..."
@@ -266,7 +268,7 @@ const AdminDashboard = () => {
                                     </div>
                                     <button
                                         type="submit"
-                                        className="w-full py-3 bg-purple-600 text-white font-bold rounded-xl hover:bg-purple-700 transition shadow-lg shadow-purple-100"
+                                        className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-lg shadow-blue-100"
                                     >
                                         Create Category
                                     </button>

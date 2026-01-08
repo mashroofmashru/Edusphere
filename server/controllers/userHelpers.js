@@ -36,7 +36,7 @@ module.exports = {
     getCourseDetails: async (req, res) => {
         try {
             const course = await Course.findById(req.params.id)
-                .populate('instructor', 'name email')
+                .populate('instructor', 'name email headline bio website linkedin')
                 .populate('enrolledStudents', 'name email');
 
             if (!course) {
@@ -83,7 +83,7 @@ module.exports = {
     getAllCourses: async (req, res) => {
         try {
             const { search, category } = req.query;
-            let query = {}; // Keep all visible for now, or { status: 'Published' } if strictly desired
+            let query = { status: 'Published' };
 
             if (search) {
                 query.title = { $regex: search, $options: 'i' };
@@ -284,6 +284,29 @@ module.exports = {
         } catch (err) {
             console.error(err);
             res.status(500).json({ success: false, message: "Failed to fetch certificates" });
+        }
+    },
+    getProfile: async (req, res) => {
+        try {
+            const user = await User.findById(req.user.id).select('-password');
+            if (!user) return res.status(404).json({ success: false, message: "User not found" });
+            res.status(200).json({ success: true, data: user });
+        } catch (err) {
+            res.status(500).json({ success: false, message: "Failed to fetch profile" });
+        }
+    },
+    updateProfile: async (req, res) => {
+        try {
+            const { name, headline, bio, website, linkedin } = req.body;
+            const updatedUser = await User.findByIdAndUpdate(
+                req.user.id,
+                { name, headline, bio, website, linkedin },
+                { new: true, runValidators: true }
+            ).select('-password');
+
+            res.status(200).json({ success: true, data: updatedUser, message: "Profile updated successfully" });
+        } catch (err) {
+            res.status(500).json({ success: false, message: "Failed to update profile" });
         }
     }
 };

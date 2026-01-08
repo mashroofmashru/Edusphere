@@ -79,7 +79,7 @@ const InstructorDashboard = () => {
         </header>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
             <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl">
               <i className="fas fa-users"></i>
@@ -105,6 +105,16 @@ const InstructorDashboard = () => {
             <div>
               <p className="text-sm font-medium text-gray-400">Active Courses</p>
               <h3 className="text-2xl font-bold text-navy-900">{stats.activeCourses}</h3>
+            </div>
+          </div>
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
+            <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl">
+              <i className="fas fa-star"></i>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-400">Avg. Rating</p>
+              <h3 className="text-2xl font-bold text-navy-900">{stats.averageRating || '0.0'}</h3>
+              <p className="text-xs text-gray-400">{stats.totalReviews || 0} reviews</p>
             </div>
           </div>
         </div>
