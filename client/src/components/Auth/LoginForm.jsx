@@ -92,9 +92,6 @@ const LoginForm = ({ onFlip }) => {
               onChange={(value) => handleChange('password', value)}
               required
             />
-
-            <FormOptions />
-
             <button type="submit" className="submit-btn" disabled={loading}>
               {loading ? 'Signing In...' : 'Sign In'}
             </button>
