@@ -43,6 +43,18 @@ const AdminSidebar = ({ activeSection, setActiveSection }) => {
                     >
                         <i className="fas fa-list-alt mr-3"></i> Enrollments
                     </button>
+                    <button
+                        onClick={() => setActiveSection('messages')}
+                        className={`flex items-center p-3 w-full text-left rounded-lg transition ${activeSection === 'messages' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-800'}`}
+                    >
+                        <i className="fas fa-envelope mr-3"></i> Messages
+                    </button>
+                    <button
+                        onClick={() => setActiveSection('instructors')}
+                        className={`flex items-center p-3 w-full text-left rounded-lg transition ${activeSection === 'instructors' ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-800'}`}
+                    >
+                        <i className="fas fa-chalkboard-teacher mr-3"></i> Instructor Requests
+                    </button>
                 </nav>
 
                 <div className="mt-auto pt-6 border-t border-gray-700">

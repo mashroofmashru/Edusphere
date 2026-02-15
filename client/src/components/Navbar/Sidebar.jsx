@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Link, useLocation } from 'react-router-dom';
+import api from '../../config/server';
 
 const Sidebar = () => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const location = useLocation();
+  const [instructorStatus, setInstructorStatus] = useState(null);
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      if (user?.role === 'instructor') {
+        try {
+          const { data } = await api.get('/users/profile');
+          setInstructorStatus(data.data.instructorStatus);
+        } catch (err) {
+          console.error("Failed to fetch status");
+        }
+      }
+    };
+    if (user) fetchStatus();
+  }, [user]);
 
   const isActive = (path) => {
-    // Exact match for dashboard home, startsWith for others to handle sub-routes if any
     return location.pathname === path;
   };
 
@@ -16,6 +31,8 @@ const Sidebar = () => {
       ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/50'
       : 'hover:bg-gray-800 text-gray-300 hover:text-white'
     }`;
+
+  const isApproved = instructorStatus === 'approved';
 
   return (
     <aside className="w-64 bg-navy-900 text-white hidden lg:flex lg:flex-col min-h-screen sticky top-0 h-screen overflow-y-auto">
@@ -26,18 +43,23 @@ const Sidebar = () => {
         </div>
 
         <nav className="space-y-2 flex-1">
-          <Link to="/instructor" className={linkClass("/instructor")}>
-            <i className="fas fa-home mr-3 w-6 text-center"></i> Dashboard
-          </Link>
-          <Link to="/instructor/courses" className={linkClass("/instructor/courses")}>
-            <i className="fas fa-play-circle mr-3 w-6 text-center"></i> My Courses
-          </Link>
-          <Link to="/instructor/students" className={linkClass("/instructor/students")}>
-            <i className="fas fa-users mr-3 w-6 text-center"></i> Students
-          </Link>
-          <Link to="/instructor/reviews" className={linkClass("/instructor/reviews")}>
-            <i className="fas fa-star mr-3 w-6 text-center"></i> Reviews
-          </Link>
+          {isApproved && (
+            <>
+              <Link to="/instructor" className={linkClass("/instructor")}>
+                <i className="fas fa-home mr-3 w-6 text-center"></i> Dashboard
+              </Link>
+              <Link to="/instructor/courses" className={linkClass("/instructor/courses")}>
+                <i className="fas fa-play-circle mr-3 w-6 text-center"></i> My Courses
+              </Link>
+              <Link to="/instructor/students" className={linkClass("/instructor/students")}>
+                <i className="fas fa-users mr-3 w-6 text-center"></i> Students
+              </Link>
+              <Link to="/instructor/reviews" className={linkClass("/instructor/reviews")}>
+                <i className="fas fa-star mr-3 w-6 text-center"></i> Reviews
+              </Link>
+            </>
+          )}
+
           <Link to="/instructor/settings" className={linkClass("/instructor/settings")}>
             <i className="fas fa-cog mr-3 w-6 text-center"></i> Settings
           </Link>

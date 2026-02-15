@@ -3,6 +3,17 @@ const Enrollment = require('../models/enrollmentSchema');
 module.exports = {
     createCourse: async (req, res) => {
         try {
+            // Check if instructor is approved
+            const User = require('../models/userSchema');
+            const user = await User.findById(req.user.id);
+
+            if (user.instructorStatus !== 'approved') {
+                return res.status(403).json({
+                    success: false,
+                    message: "Your instructor account is pending approval. Please complete your profile and wait for admin approval."
+                });
+            }
+
             const courseData = {
                 ...req.body,
                 sections: JSON.parse(req.body.sections),
@@ -127,6 +138,35 @@ module.exports = {
             const totalRating = reviews.reduce((acc, curr) => acc + curr.rating, 0);
             const averageRating = reviews.length > 0 ? (totalRating / reviews.length).toFixed(1) : 0;
 
+            // Chart Data 1: Enrollment Trend (Last 6 Months)
+            // Enrollment is already required at the top
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const enrollmentTrend = [];
+            const today = new Date();
+            for (let i = 5; i >= 0; i--) {
+                const monthDate = new Date(today.getFullYear(), today.getMonth() - i, 1);
+                const monthName = months[monthDate.getMonth()];
+                const year = monthDate.getFullYear();
+
+                const count = enrollments.filter(e => {
+                    const eDate = new Date(e.createdAt); // Assuming enrollments have createdAt
+                    return eDate.getMonth() === monthDate.getMonth() && eDate.getFullYear() === year;
+                }).length;
+
+                enrollmentTrend.push({ name: monthName, enrollments: count });
+            }
+
+            // Chart Data 2: Course Performance (Top 5 by Revenue)
+            const coursePerformance = courses.map(course => {
+                const courseEnrollments = enrollments.filter(e => e.course._id.toString() === course._id.toString());
+                const revenue = courseEnrollments.reduce((acc, curr) => acc + (curr.paidAmount || course.price || 0), 0);
+                return {
+                    name: course.title,
+                    revenue: revenue,
+                    students: courseEnrollments.length
+                };
+            }).sort((a, b) => b.revenue - a.revenue).slice(0, 5);
+
             res.status(200).json({
                 success: true,
                 stats: {
@@ -134,7 +174,9 @@ module.exports = {
                     totalRevenue,
                     activeCourses,
                     averageRating,
-                    totalReviews: reviews.length
+                    totalReviews: reviews.length,
+                    enrollmentTrend,
+                    coursePerformance
                 }
             });
         } catch (err) {

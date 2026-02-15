@@ -4,6 +4,10 @@ const jwt = require('jsonwebtoken')
 module.exports = {
     doSignup: async (req, res) => {
         try {
+            if (req.body.password && req.body.password.length < 3) {
+                return res.status(400).json({ success: false, message: "Password must be at least 3 characters long" });
+            }
+
             req.body.password = await bcrypt.hash(req.body.password, 10);
 
             const { name, email, password, role } = req.body;

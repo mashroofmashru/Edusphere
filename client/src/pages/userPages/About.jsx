@@ -4,6 +4,10 @@ import Navbar from '../../components/Navbar/Navbar';
 import Footer from '../../components/Footer/Footer';
 import { useNavigate } from 'react-router-dom';
 
+import api from '../../config/server';
+import Toast from '../../components/Alert/Toast';
+import { useState } from 'react';
+
 const TeamMember = ({ name, title, bio, imgUrl }) => (
     <div className="p-8 rounded-xl shadow-xl bg-white transition duration-500 hover:shadow-2xl hover:scale-[1.02] transform">
         <img
@@ -27,6 +31,120 @@ const ValueCard = ({ title, description }) => (
         </p>
     </div>
 );
+
+const ContactSection = () => {
+    const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+    const [loading, setLoading] = useState(false);
+    const [notification, setNotification] = useState({ show: false, message: "", type: "success" });
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            await api.post('/users/contact', formData);
+            setNotification({ show: true, message: "Message sent successfully!", type: "success" });
+            setFormData({ name: '', email: '', subject: '', message: '' });
+        } catch (err) {
+            setNotification({ show: true, message: "Failed to send message.", type: "error" });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <section className="py-20 bg-[#F8F9FA]">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+                    <div className="grid md:grid-cols-2">
+                        <div className="p-10 bg-[#1A2B4C] text-white flex flex-col justify-center">
+                            <h2 className="text-3xl font-bold mb-6">Get in Touch</h2>
+                            <p className="mb-8 text-blue-200">Have questions about our courses or platform? We're here to help!</p>
+                            <div className="space-y-4">
+                                <div className="flex items-center">
+                                    <i className="fas fa-envelope w-8 text-blue-400"></i>
+                                    <span>support@eduverse.com</span>
+                                </div>
+                                <div className="flex items-center">
+                                    <i className="fas fa-phone w-8 text-blue-400"></i>
+                                    <span>+91 9876543210</span>
+                                </div>
+                                <div className="flex items-center">
+                                    <i className="fas fa-map-marker-alt w-8 text-blue-400"></i>
+                                    <span>SES College, Sreekandapuram<br />Kerala Kannur</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="p-10">
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        required
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        required
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                                    <input
+                                        type="text"
+                                        name="subject"
+                                        value={formData.subject}
+                                        onChange={handleChange}
+                                        required
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                                    <textarea
+                                        name="message"
+                                        value={formData.message}
+                                        onChange={handleChange}
+                                        required
+                                        rows="4"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                                    ></textarea>
+                                </div>
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="w-full bg-[#667EEA] text-white py-3 rounded-lg font-bold hover:bg-[#5A6FDC] transition disabled:opacity-70"
+                                >
+                                    {loading ? 'Sending...' : 'Send Message'}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <Toast
+                show={notification.show}
+                message={notification.message}
+                type={notification.type}
+                onClose={() => setNotification({ ...notification, show: false })}
+            />
+        </section>
+    );
+};
 
 const About = () => {
     const navigate = useNavigate()
@@ -110,6 +228,9 @@ const About = () => {
                     </div>
                 </div>
             </section>
+
+            {/* Contact Section */}
+            <ContactSection />
 
             {/* CTA Footer */}
             <section className="py-16 bg-[#1A2B4C] text-center">

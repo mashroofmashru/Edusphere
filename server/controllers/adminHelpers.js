@@ -2,11 +2,13 @@ const User = require('../models/userSchema');
 const Course = require('../models/courseSchema');
 const Category = require('../models/categorySchema');
 const Enrollment = require('../models/enrollmentSchema');
+const Contact = require('../models/contactSchema');
+const { sendEmail } = require('../utils/emailService');
 
 module.exports = {
     getAllUsers: async (req, res) => {
         try {
-            const users = await User.find({}, 'name email role');
+            const users = await User.find({}, 'name email role instructorStatus headline bio website linkedin');
             res.status(200).json({ success: true, data: users });
         } catch (err) {
             res.status(500).json({ success: false, message: "Failed to fetch users" });
@@ -56,18 +58,54 @@ module.exports = {
         try {
             const usersCount = await User.countDocuments();
             const coursesCount = await Course.countDocuments();
+            const enrollmentsCount = await Enrollment.countDocuments();
 
-            // For now, let's just count total enrollments as a proxy for revenue if Stripe isn't fully logged in DB yet
-            // Or better, calculate revenue from courses (price * enrollments.length)
-            const courses = await Course.find({}, 'price enrolledStudents');
+            // Calculate Revenue
+            const courses = await Course.find({}, 'price enrolledStudents category');
             const totalRevenue = courses.reduce((acc, course) => acc + (course.price * course.enrolledStudents.length), 0);
+
+            // Chart Data: Enrollments over time (Last 6 months)
+            const sixMonthsAgo = new Date();
+            sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+            // Monthly Enrollments
+            const monthlyEnrollments = await Enrollment.aggregate([
+                {
+                    $match: {
+                        createdAt: { $gte: sixMonthsAgo },
+                        status: 'active'
+                    }
+                },
+                {
+                    $group: {
+                        _id: { $month: "$createdAt" },
+                        count: { $sum: 1 }
+                    }
+                },
+                { $sort: { "_id": 1 } }
+            ]);
+
+            const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const enrollmentData = monthlyEnrollments.map(item => ({
+                name: monthNames[item._id],
+                enrollments: item.count
+            }));
+
+            // Chart Data: Course Categories
+            const categoryData = await Course.aggregate([
+                { $group: { _id: "$category", value: { $sum: 1 } } },
+                { $project: { name: "$_id", value: 1, _id: 0 } }
+            ]);
 
             res.status(200).json({
                 success: true,
                 data: {
                     users: usersCount,
                     courses: coursesCount,
-                    revenue: totalRevenue.toFixed(2)
+                    enrollments: enrollmentsCount,
+                    revenue: totalRevenue.toFixed(2),
+                    enrollmentTrend: enrollmentData,
+                    categoryDistribution: categoryData
                 }
             });
         } catch (err) {
@@ -115,6 +153,7 @@ module.exports = {
             res.status(500).json({ success: false, message: "Failed to delete category" });
         }
     },
+
     getAllEnrollments: async (req, res) => {
         try {
             const enrollments = await Enrollment.find({ status: 'active' })
@@ -126,13 +165,73 @@ module.exports = {
                 studentEmail: e.user?.email,
                 courseTitle: e.course?.title,
                 courseId: e.course?._id,
-                enrolledAt: e.enrolledAt
+                enrolledAt: e.enrolledAt,
+                paymentId: e.paymentId,
+                status: e.status
             })).filter(e => e.studentName);
 
             res.status(200).json({ success: true, data: enrollmentList });
         } catch (err) {
             console.error(err);
             res.status(500).json({ success: false, message: "Failed to fetch all enrollments" });
+        }
+    },
+
+    getAllMessages: async (req, res) => {
+        try {
+            const messages = await Contact.find().sort({ createdAt: -1 });
+            res.status(200).json({ success: true, data: messages });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ success: false, message: "Failed to fetch messages" });
+        }
+    },
+
+    replyToMessage: async (req, res) => {
+        try {
+            const { messageId, replySubject, replyBody } = req.body;
+
+            const contactMessage = await Contact.findById(messageId);
+            if (!contactMessage) {
+                return res.status(404).json({ success: false, message: "Message not found" });
+            }
+
+            // Send Email
+            await sendEmail(contactMessage.email, replySubject, replyBody);
+
+            // Update Status and Save Reply
+            contactMessage.status = 'Replied';
+            contactMessage.reply = {
+                subject: replySubject,
+                body: replyBody,
+                repliedAt: new Date()
+            };
+            await contactMessage.save();
+
+            res.status(200).json({ success: true, message: "Reply sent successfully" });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ success: false, message: "Failed to send reply" });
+        }
+    },
+
+    updateInstructorStatus: async (req, res) => {
+        try {
+            const { status } = req.body; // 'approved' or 'rejected'
+            const userId = req.params.id;
+
+            if (!['approved', 'rejected', 'pending'].includes(status)) {
+                return res.status(400).json({ success: false, message: "Invalid status" });
+            }
+
+            const user = await User.findByIdAndUpdate(userId, { instructorStatus: status }, { new: true });
+
+            // Optionally send email notification here
+
+            res.status(200).json({ success: true, message: `Instructor ${status} successfully`, data: user });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ success: false, message: "Failed to update instructor status" });
         }
     }
 };

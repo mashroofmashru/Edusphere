@@ -1,11 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import api from '../../config/server';
 
 const StatsSection = () => {
-  const stats = [
+  const [stats, setStats] = useState([
     { number: "50,000+", label: "Active Students" },
     { number: "2,500+", label: "Courses Available" },
     { number: "98%", label: "Satisfaction Rate" }
-  ];
+  ]);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const { data } = await api.get('/users/stats');
+        if (data.success) {
+          setStats([
+            { number: `${data.data.activeStudents}+`, label: "Active Students" },
+            { number: `${data.data.coursesAvailable}+`, label: "Courses Available" },
+            { number: data.data.satisfactionRate, label: "Satisfaction Rate" }
+          ]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch stats", error);
+      }
+    };
+    fetchStats();
+  }, []);
 
   return (
     <section className="py-16 bg-gradient-to-r from-blue-50 to-blue-100">

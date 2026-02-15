@@ -4,11 +4,18 @@ import api from '../../config/server';
 import CourseForm from '../../components/Forms/CourseForm';
 import Toast from '../../components/Alert/Toast';
 import { useNavigate } from 'react-router-dom';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const InstructorDashboard = () => {
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [stats, setStats] = useState({ totalStudents: 0, totalRevenue: 0, activeCourses: 0 });
+  const [stats, setStats] = useState({
+    totalStudents: 0,
+    totalRevenue: 0,
+    activeCourses: 0,
+    enrollmentTrend: [],
+    coursePerformance: []
+  });
   const [notification, setNotification] = useState({ show: false, message: "", type: "success" });
   const navigate = useNavigate();
 
@@ -35,8 +42,6 @@ const InstructorDashboard = () => {
   const handleSubmitCourse = async (courseData, courseId) => {
     setLoading(true);
     try {
-      // Logic for creating course only, since edit is likely done from My Courses page
-      // But keeping support for robustness
       if (courseId) {
         await api.patch(`/instructor/edit/${courseId}`, courseData);
         setNotification({ show: true, message: "Course updated successfully!", type: "success" });
@@ -95,7 +100,7 @@ const InstructorDashboard = () => {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-400">Total Revenue</p>
-              <h3 className="text-2xl font-bold text-navy-900">₹{stats.totalRevenue.toLocaleString()}</h3>
+              <h3 className="text-2xl font-bold text-navy-900">₹{stats.totalRevenue ? stats.totalRevenue.toLocaleString() : '0'}</h3>
             </div>
           </div>
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
@@ -119,7 +124,56 @@ const InstructorDashboard = () => {
           </div>
         </div>
 
-        {/* Empty State or Welcome Graphic could go here if needed, but keeping it clean for now */}
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Enrollment Trend Chart */}
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <h3 className="text-lg font-bold text-navy-900 mb-6">Enrollment Trends (Last 6 Months)</h3>
+            <div className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={stats.enrollmentTrend} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} fontSize={12} tick={{ fill: '#9CA3AF' }} />
+                  <YAxis axisLine={false} tickLine={false} fontSize={12} tick={{ fill: '#9CA3AF' }} />
+                  <Tooltip
+                    cursor={{ fill: '#f9fafb' }}
+                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                  />
+                  <Bar dataKey="enrollments" fill="#4F46E5" radius={[4, 4, 0, 0]} barSize={30} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Top Courses Chart */}
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <h3 className="text-lg font-bold text-navy-900 mb-6">Top Courses by Enrollment</h3>
+            <div className="h-[300px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  layout="vertical"
+                  data={stats.coursePerformance}
+                  margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                  <XAxis type="number" hide />
+                  <YAxis
+                    dataKey="name"
+                    type="category"
+                    width={100}
+                    tick={{ fontSize: 12, fill: '#4B5563' }}
+                    tickFormatter={(value) => value.length > 15 ? `${value.substring(0, 15)}...` : value}
+                  />
+                  <Tooltip
+                    cursor={{ fill: '#f9fafb' }}
+                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                  />
+                  <Bar dataKey="students" fill="#10B981" radius={[0, 4, 4, 0]} barSize={20} name="Students" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
 
       </main>
 

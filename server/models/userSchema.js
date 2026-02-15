@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'admin', 'instructor'],
     default: 'user'
   },
+  instructorStatus: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending'
+  },
   headline: { type: String, trim: true },
   bio: { type: String, trim: true },
   website: { type: String, trim: true },

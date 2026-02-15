@@ -26,7 +26,8 @@ const InstructorSettings = () => {
                         headline: data.data.headline || '',
                         bio: data.data.bio || '',
                         website: data.data.website || '',
-                        linkedin: data.data.linkedin || ''
+                        linkedin: data.data.linkedin || '',
+                        instructorStatus: data.data.instructorStatus || 'pending'
                     });
                 }
             } catch (err) {
@@ -38,6 +39,12 @@ const InstructorSettings = () => {
 
     const handleChange = (e) => {
         setProfile({ ...profile, [e.target.name]: e.target.value });
+    };
+
+    const getStatusBadge = (status) => {
+        if (status === 'approved') return <span className="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded ml-2">Verified Instructor</span>;
+        if (status === 'rejected') return <span className="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded ml-2">Application Rejected</span>;
+        return <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded ml-2">Pending Approval</span>;
     };
 
     const handleSubmit = async (e) => {
@@ -70,8 +77,42 @@ const InstructorSettings = () => {
 
             <main className="flex-1 overflow-y-auto p-4 md:p-8">
                 <header className="mb-8">
-                    <h1 className="text-3xl font-extrabold text-navy-900 tracking-tight">Instructor Settings</h1>
-                    <p className="text-gray-500 mt-1">Manage your public profile and account preferences.</p>
+                    <h1 className="text-3xl font-extrabold text-navy-900 tracking-tight flex items-center">
+                        Instructor Settings
+                    </h1>
+
+                    {/* Status Banner */}
+                    {profile.instructorStatus === 'pending' && (
+                        <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-start gap-3">
+                            <i className="fas fa-clock text-yellow-600 text-xl mt-0.5"></i>
+                            <div>
+                                <h3 className="font-bold text-yellow-800">Waiting for Approval</h3>
+                                <p className="text-yellow-700 text-sm mt-1">
+                                    Your instructor application is currently under review. <br />
+                                    Please ensure your profile is fully completed with a bio and professional links to speed up the process.
+                                    You will be notified once an admin reviews your request.
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
+                    {profile.instructorStatus === 'rejected' && (
+                        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
+                            <i className="fas fa-times-circle text-red-600 text-xl mt-0.5"></i>
+                            <div>
+                                <h3 className="font-bold text-red-800">Application Rejected/Blocked</h3>
+                                <p className="text-red-700 text-sm mt-1">
+                                    Your instructor access has been revoked or denied. Please contact support for more details.
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
+                    {profile.instructorStatus === 'approved' && (
+                        <p className="text-green-600 font-medium mt-2 flex items-center gap-2">
+                            <i className="fas fa-check-circle"></i> Verified Instructor Account
+                        </p>
+                    )}
                 </header>
 
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-3xl">

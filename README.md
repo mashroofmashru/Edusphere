@@ -79,6 +79,10 @@ STRIPE_SECRET_KEY=your_stripe_secret_key
 
 # AI Services (Google Gemini)
 GEMINI_API_KEY=your_gemini_api_key
+
+# Email Configuration (Required for Contact Us Reply)
+EMAIL_USER=example@email.com
+EMAIL_PASS=your_email_password
 ```
 
 *Note: The client is currently configured to point to `http://localhost:3000` by default. You can modify `client/src/config/server.js` if you change the server port.*

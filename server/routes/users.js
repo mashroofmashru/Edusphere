@@ -4,6 +4,8 @@ var router = express.Router();
 const userHelpers = require('../controllers/userHelpers');
 const { verifyLogin, optionalAuth } = require('../middlewares/authMiddleware');
 
+router.get('/stats', userHelpers.getPublicStats);
+
 router.get('/all-courses', userHelpers.getAllCourses);
 router.get('/my-courses', verifyLogin, userHelpers.getMyCourses);
 router.get('/course/:id', optionalAuth, userHelpers.getCourseDetails);
@@ -26,5 +28,7 @@ router.put('/profile/update', verifyLogin, userHelpers.updateProfile);
 
 const aiController = require('../controllers/aiController');
 router.post('/ai-chat', verifyLogin, aiController.chatWithAI);
+
+router.post('/contact', userHelpers.submitContactMessage);
 
 module.exports = router;
