@@ -3,6 +3,7 @@ import AdminSidebar from '../../components/Navbar/AdminSidebar';
 import api from '../../config/server';
 import Toast from '../../components/Alert/Toast';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import CourseDetailsModal from '../../components/CouseDetail/CourseDetailsModal';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
@@ -26,6 +27,7 @@ const AdminDashboard = () => {
     const [viewMessage, setViewMessage] = useState(null);
     const [viewEnrollment, setViewEnrollment] = useState(null);
     const [viewInstructor, setViewInstructor] = useState(null);
+    const [viewCourseDetails, setViewCourseDetails] = useState(null);
     const [loading, setLoading] = useState(false);
     const [notification, setNotification] = useState({ show: false, message: "", type: "success" });
 
@@ -44,7 +46,7 @@ const AdminDashboard = () => {
                 api.get('/admin/enrollments'),
                 api.get('/admin/messages')
             ]);
-
+            console.log(coursesRes.data.data);
             setUsers(usersRes.data.data || []);
             setCourses(coursesRes.data.data || []);
             setCategories(categoriesRes.data.data || []);
@@ -279,7 +281,11 @@ const AdminDashboard = () => {
                             </thead>
                             <tbody className="divide-y divide-gray-100">
                                 {courses.map(course => (
-                                    <tr key={course._id} className="hover:bg-gray-50">
+                                    <tr
+                                        key={course._id}
+                                        className="hover:bg-gray-50 cursor-pointer transition"
+                                        onClick={() => setViewCourseDetails(course)}
+                                    >
                                         <td className="p-5">
                                             <div className="flex items-center gap-3">
                                                 <img
@@ -300,7 +306,10 @@ const AdminDashboard = () => {
                                         <td className="p-5 font-bold">₹{course.price}</td>
                                         <td className="p-5">
                                             <button
-                                                onClick={() => handleToggleStatus(course._id, course.status)}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleToggleStatus(course._id, course.status);
+                                                }}
                                                 className={`px-3 py-1 rounded-full text-xs font-bold transition ${course.status === 'Published'
                                                     ? 'bg-green-100 text-green-600 hover:bg-green-200'
                                                     : 'bg-amber-100 text-amber-600 hover:bg-amber-200'
@@ -310,7 +319,13 @@ const AdminDashboard = () => {
                                             </button>
                                         </td>
                                         <td className="p-5 text-right space-x-2">
-                                            <button onClick={() => handleDeleteCourse(course._id)} className="text-red-500 hover:text-red-700 p-2">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDeleteCourse(course._id);
+                                                }}
+                                                className="text-red-500 hover:text-red-700 p-2"
+                                            >
                                                 <i className="fas fa-trash"></i>
                                             </button>
                                         </td>
@@ -968,6 +983,11 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             )}
+
+            <CourseDetailsModal
+                course={viewCourseDetails}
+                onClose={() => setViewCourseDetails(null)}
+            />
 
             <Toast
                 show={notification.show}

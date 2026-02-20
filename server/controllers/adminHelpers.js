@@ -18,8 +18,7 @@ module.exports = {
     getAllCourses: async (req, res) => {
         try {
             const courses = await Course.find({})
-                .populate('instructor', 'name email')
-                .select('title category price status instructor thumbnail');
+                .populate('instructor', 'name email');
             res.status(200).json({ success: true, data: courses });
         } catch (err) {
             res.status(500).json({ success: false, message: "Failed to fetch courses" });

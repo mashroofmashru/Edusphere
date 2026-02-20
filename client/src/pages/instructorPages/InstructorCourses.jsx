@@ -3,14 +3,15 @@ import Sidebar from '../../components/Navbar/Sidebar';
 import api from '../../config/server';
 import CourseForm from '../../components/Forms/CourseForm';
 import Toast from '../../components/Alert/Toast';
+import CourseDetailsModal from '../../components/CouseDetail/CourseDetailsModal';
 
 const InstructorCourses = () => {
     const [courses, setCourses] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [loading, setLoading] = useState(false);
     const [editingCourse, setEditingCourse] = useState(null);
+    const [viewCourseDetails, setViewCourseDetails] = useState(null);
     const [notification, setNotification] = useState({ show: false, message: "", type: "success" });
-
     useEffect(() => {
         fetchCourses();
     }, []);
@@ -96,7 +97,11 @@ const InstructorCourses = () => {
                             </thead>
                             <tbody className="divide-y divide-gray-100">
                                 {courses.length > 0 ? courses.map(course => (
-                                    <tr key={course._id}>
+                                    <tr
+                                        key={course._id}
+                                        className="hover:bg-gray-50 cursor-pointer transition"
+                                        onClick={() => setViewCourseDetails(course)}
+                                    >
                                         <td className="p-5">
                                             <p className="font-bold text-navy-900">{course.title}</p>
                                             <p className="text-xs text-green-600 font-bold uppercase mt-1">{course.status || 'Published'}</p>
@@ -106,7 +111,8 @@ const InstructorCourses = () => {
                                         <td className="p-5">{course.enrolledStudents?.length || 0}</td>
                                         <td className="p-5 text-right space-x-3">
                                             <button
-                                                onClick={() => {
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
                                                     setEditingCourse(course);
                                                     setShowForm(true);
                                                 }}
@@ -115,7 +121,10 @@ const InstructorCourses = () => {
                                                 <i className="fas fa-edit text-xs"></i>
                                             </button>
                                             <button
-                                                onClick={() => handleDeleteCourse(course._id)}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDeleteCourse(course._id);
+                                                }}
                                                 className="w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition"
                                             >
                                                 <i className="fas fa-trash text-xs"></i>
@@ -147,6 +156,11 @@ const InstructorCourses = () => {
                     initialData={editingCourse}
                 />
             )}
+
+            <CourseDetailsModal
+                course={viewCourseDetails}
+                onClose={() => setViewCourseDetails(null)}
+            />
 
             <Toast
                 show={notification.show}

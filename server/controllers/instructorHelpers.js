@@ -17,8 +17,7 @@ module.exports = {
             const courseData = {
                 ...req.body,
                 sections: JSON.parse(req.body.sections),
-
-                thumbnail: req.file ? req.file.path : 'default.jpg',
+                thumbnail: req.file ? req.file.path.replace(/\\/g, "/") : 'default.jpg',
                 instructor: req.user?.id || '64b0f1a2e4b0f1a2e4b0f1a2'
             };
 
@@ -43,7 +42,7 @@ module.exports = {
     },
     getMyCourses: async (req, res) => {
         try {
-            const courses = await Course.find({ instructor: req.user.id });
+            const courses = await Course.find({ instructor: req.user.id }).populate('instructor', 'name');
             console.log(courses)
             res.status(200).json({ success: true, courses });
         } catch (err) {
@@ -95,7 +94,7 @@ module.exports = {
                 updateData.sections = JSON.parse(updateData.sections);
             }
             if (req.file) {
-                updateData.thumbnail = req.file.path;
+                updateData.thumbnail = req.file.path.replace(/\\/g, "/");
             }
 
             const updatedCourse = await Course.findByIdAndUpdate(courseId, updateData, { new: true });

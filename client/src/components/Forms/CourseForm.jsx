@@ -243,7 +243,9 @@ const CourseForm = ({ onClose, onSubmit, loading, initialData }) => {
     }
 
     const data = new FormData();
-    data.append('thumbnail', thumbnailFile);
+    if (thumbnailFile) {
+      data.append('thumbnail', thumbnailFile);
+    }
     Object.keys(formData).forEach(key => {
       if (key === 'sections') {
         data.append('sections', JSON.stringify(formData.sections));
