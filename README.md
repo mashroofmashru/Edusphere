@@ -4,14 +4,12 @@
 
 **Test Credentials:**
 * **Admin:**
-  * Email: `[admin_email@example.com]`
-  * Password: `[password]`
+  * Email: `admin@mashroof.me`
+  * Password: `admin123`
 * **Instructor:**
-  * Email: `[instructor_email@example.com]`
-  * Password: `[password]`
-* **User (Student):**
-  * Email: `[user_email@example.com]`
-  * Password: `[password]`
+  * Email: `instructor@mashroof.me]`
+  * Password: `instructor123`
+
 
 EduSphere is a robust and modern Payment-integrated Learning Management System (LMS) designed to bridge the gap between instructors and students. It offers a seamless experience for creating, selling, and consuming educational content, enhanced with AI-powered tutoring and professional certification.
 
