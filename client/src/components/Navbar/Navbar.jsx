@@ -26,7 +26,7 @@ const Navbar = () => {
 
           <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
             <i className="fas fa-graduation-cap text-2xl text-blue-400 mr-2"></i>
-            <span className="text-xl font-bold">EduVerse</span>
+            <span className="text-xl font-bold">EduSphere</span>
           </div>
 
           <div className="hidden md:flex space-x-8 items-center">

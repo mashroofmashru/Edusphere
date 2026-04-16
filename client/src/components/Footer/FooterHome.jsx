@@ -20,7 +20,7 @@ const Footer = () => {
           <div>
             <div className="flex items-center mb-4">
               <i className="fas fa-graduation-cap text-2xl text-blue-400 mr-2"></i>
-              <span className="text-xl font-bold">EduVerse</span>
+              <span className="text-xl font-bold">EduSphere</span>
             </div>
             <p className="text-blue-100 mb-4">
               Empowering learners worldwide with quality education accessible anytime, anywhere.
@@ -54,7 +54,7 @@ const Footer = () => {
         </div>
 
         <div className="pt-8 border-t border-gray-700 text-center text-blue-200">
-          <p>&copy; {new Date().getFullYear()} EduVerse. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} EduSphere. All rights reserved.</p>
         </div>
       </div>
     </footer>

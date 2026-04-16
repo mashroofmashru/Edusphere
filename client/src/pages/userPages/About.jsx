@@ -66,7 +66,7 @@ const ContactSection = () => {
                             <div className="space-y-4">
                                 <div className="flex items-center">
                                     <i className="fas fa-envelope w-8 text-blue-400"></i>
-                                    <span>support@eduverse.com</span>
+                                    <span>support@EduSphere.com</span>
                                 </div>
                                 <div className="flex items-center">
                                     <i className="fas fa-phone w-8 text-blue-400"></i>
@@ -175,10 +175,10 @@ const About = () => {
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-60 z-10 flex flex-col justify-center items-center p-4">
                     <h1 className="text-5xl sm:text-6xl font-extrabold mb-4 text-white animate-fadeInDown">
-                        About EduVerse
+                        About EduSphere
                     </h1>
                     <p className="text-xl sm:text-2xl text-white mb-8 max-w-4xl mx-auto leading-relaxed animate-fadeInUp delay-200">
-                        EduVerse is a platform dedicated to empowering your future. We connect passionate learners with top industry experts through flexible, engaging, and high-quality online courses.
+                        EduSphere is a platform dedicated to empowering your future. We connect passionate learners with top industry experts through flexible, engaging, and high-quality online courses.
                     </p>
                 </div>
             </section>
@@ -198,7 +198,7 @@ const About = () => {
                         <div className="p-6 rounded-lg border-l-4 border-[#667EEA] shadow-md hover:shadow-xl transition duration-300">
                             <h2 className="text-4xl font-bold mb-4 text-[#1A2B4C]">Our Vision</h2>
                             <p className="text-lg text-[#334D6E] leading-relaxed">
-                                We envision a future where continuous learning is not a luxury, but a seamless and exciting part of everyday life. EduVerse will be the central hub for global upskilling and knowledge sharing.
+                                We envision a future where continuous learning is not a luxury, but a seamless and exciting part of everyday life. EduSphere will be the central hub for global upskilling and knowledge sharing.
                             </p>
                         </div>
                     </div>
@@ -238,7 +238,7 @@ const About = () => {
                     Ready to Start Your Learning Journey?
                 </h2>
                 <p className="text-xl text-[#F8F9FA] mb-8">
-                    Join thousands of learners achieving their dreams with EduVerse.
+                    Join thousands of learners achieving their dreams with EduSphere.
                 </p>
                 <button onClick={ExploreCousers} className="bg-[#667EEA] text-white px-10 py-4 text-lg font-bold rounded-full hover:bg-[#5A6FDC] transition duration-300 shadow-xl transform hover:scale-105">
                     Explore Courses
