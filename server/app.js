@@ -18,7 +18,7 @@ var paymentRouter = require('./routes/payment')
 var app = express();
 
 // for react server
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: process.env.CLIENT_URL }));
 
 app.use(logger('dev'));
 app.use(express.json({
