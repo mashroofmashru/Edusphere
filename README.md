@@ -1,5 +1,18 @@
 # EduSphere - E-Learning Platform
 
+**🌐 Live Demo:** [https://edusphere-black-nine.vercel.app](https://edusphere-black-nine.vercel.app)
+
+**Test Credentials:**
+* **Admin:**
+  * Email: `[admin_email@example.com]`
+  * Password: `[password]`
+* **Instructor:**
+  * Email: `[instructor_email@example.com]`
+  * Password: `[password]`
+* **User (Student):**
+  * Email: `[user_email@example.com]`
+  * Password: `[password]`
+
 EduSphere is a robust and modern Payment-integrated Learning Management System (LMS) designed to bridge the gap between instructors and students. It offers a seamless experience for creating, selling, and consuming educational content, enhanced with AI-powered tutoring and professional certification.
 
 ## 🚀 Features

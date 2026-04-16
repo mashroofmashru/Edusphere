@@ -1,7 +1,8 @@
 // components/Banner.js
 import React from 'react';
-
+import { useNavigate } from 'react-router-dom';
 const Banner = () => {
+  const navigate = useNavigate();
   const features = [
     {
       icon: "fas fa-book",
@@ -32,15 +33,10 @@ const Banner = () => {
               Access thousands of courses taught by industry experts. Learn at your own pace and achieve your goals.
             </p>
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-              {/* <button className="px-6 py-3 bg-blue-500 rounded-lg hover:bg-blue-400 transition font-medium">
-                Explore Courses
-              </button> */}
-              <button className="px-6 py-3 bg-transparent border-2 border-white rounded-lg hover:bg-white hover:text-navy-900 transition font-medium">
+              <button onClick={() => navigate("/viewCourses")} className="px-6 py-3 bg-transparent border-2 border-white rounded-lg hover:bg-white hover:text-navy-900 transition font-medium">
                 Explore Courses
               </button>
-              {/* <button className="px-6 py-3 bg-transparent border-2 border-white rounded-lg hover:bg-white hover:text-navy-900 transition font-medium">
-                Become an Instructor
-              </button> */}
+
             </div>
           </div>
           <div className="md:w-1/2 flex justify-center">
