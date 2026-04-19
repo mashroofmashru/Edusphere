@@ -53,7 +53,7 @@ const MyCourses = () => {
                                     duration={course.totalDuration ? `${Math.round(course.totalDuration / 60)} hours` : "Self-paced"}
                                     price="Enrolled"
                                     badge={course.level}
-                                    bgImage={course.thumbnail && !course.thumbnail.includes('default') ? `http://localhost:3000/${course.thumbnail.replace(/\\/g, '/')}` : 'https://via.placeholder.com/300x200'}
+                                    bgImage={course.thumbnail && !course.thumbnail.includes('default') ? `${import.meta.env.VITE_API_BASE_URL}/${course.thumbnail.replace(/\\/g, '/')}` : 'https://via.placeholder.com/300x200'}
                                 />
                                 <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition translate-y-2 group-hover:translate-y-0 z-10">
                                     <button

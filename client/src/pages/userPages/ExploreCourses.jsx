@@ -22,7 +22,7 @@ const ExploreCourses = () => {
     try {
       const [coursesRes, categoriesRes] = await Promise.all([
         api.get(`/users/all-courses?search=${search}&category=${category}`),
-        api.get('/admin/categories') // Using the public readable route
+        api.get('/admin/categories')
       ]);
       setCourses(coursesRes.data.data);
       setCategories(categoriesRes.data.data);
@@ -94,12 +94,12 @@ const ExploreCourses = () => {
                   key={course._id}
                   id={course._id}
                   title={course.title}
-                  description={course.subtitle || course.description} // Fallback to description
+                  description={course.subtitle || course.description}
                   rating={course.rating || "New"}
                   duration={course.totalDuration ? `${Math.round(course.totalDuration / 60)} hours` : "Self-paced"}
                   price={`₹${course.price}`}
                   badge={course.level}
-                  bgImage={course.thumbnail && !course.thumbnail.includes('default') ? `http://localhost:3000/${course.thumbnail.replace(/\\/g, '/')}` : 'https://via.placeholder.com/300x200'}
+                  bgImage={course.thumbnail && !course.thumbnail.includes('default') ? `${import.meta.env.VITE_API_BASE_URL}/${course.thumbnail.replace(/\\/g, '/')}` : 'https://via.placeholder.com/300x200'}
                 />
               ))
             ) : (

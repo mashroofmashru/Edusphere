@@ -151,10 +151,10 @@ const AdminDashboard = () => {
     }
 
     return (
-        <div className="flex h-screen bg-gray-50 font-sans">
+        <div className="flex h-screen w-full bg-gray-50 font-sans overflow-hidden">
             <AdminSidebar activeSection={activeSection} setActiveSection={setActiveSection} />
 
-            <main className="flex-1 overflow-y-auto p-4 md:p-8">
+            <main className="flex-1 w-full overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
                 <header className="mb-8">
                     <h1 className="text-3xl font-extrabold text-navy-900">
                         {activeSection === 'dashboard' && 'Admin Dashboard'}
@@ -268,8 +268,8 @@ const AdminDashboard = () => {
 
                 {/* Courses List View */}
                 {activeSection === 'courses' && (
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                        <table className="w-full">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-x-auto">
+                        <table className="w-full min-w-[800px]">
                             <thead className="bg-gray-50">
                                 <tr className="text-left text-xs font-semibold text-gray-500 uppercase">
                                     <th className="p-5">Course</th>
@@ -289,7 +289,7 @@ const AdminDashboard = () => {
                                         <td className="p-5">
                                             <div className="flex items-center gap-3">
                                                 <img
-                                                    src={course.thumbnail && !course.thumbnail.includes('default') ? `http://localhost:3000/${course.thumbnail.replace(/\\/g, '/')}` : 'https://via.placeholder.com/150'}
+                                                    src={course.thumbnail && !course.thumbnail.includes('default') ? `${import.meta.env.VITE_API_BASE_URL}/${course.thumbnail.replace(/\\/g, '/')}` : 'https://via.placeholder.com/150'}
                                                     className="w-10 h-10 rounded object-cover bg-gray-200"
                                                     alt=""
                                                 />
@@ -338,8 +338,8 @@ const AdminDashboard = () => {
 
                 {/* Users List View */}
                 {activeSection === 'users' && (
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                        <table className="w-full">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-x-auto">
+                        <table className="w-full min-w-[500px]">
                             <thead className="bg-gray-50">
                                 <tr className="text-left text-xs font-semibold text-gray-500 uppercase">
                                     <th className="p-5">User</th>
@@ -408,8 +408,8 @@ const AdminDashboard = () => {
                             </div>
                         </div>
                         <div className="lg:col-span-2">
-                            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                                <table className="w-full">
+                            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-x-auto">
+                                <table className="w-full min-w-[500px]">
                                     <thead className="bg-gray-50">
                                         <tr className="text-left text-xs font-semibold text-gray-500 uppercase">
                                             <th className="p-5">Category Name</th>
@@ -446,8 +446,8 @@ const AdminDashboard = () => {
 
                 {/* Enrollments View */}
                 {activeSection === 'enrollments' && (
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                        <table className="w-full">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-x-auto">
+                        <table className="w-full min-w-[600px]">
                             <thead className="bg-gray-50">
                                 <tr className="text-left text-xs font-semibold text-gray-500 uppercase">
                                     <th className="p-5">Student</th>
@@ -487,8 +487,8 @@ const AdminDashboard = () => {
 
                 {/* Messages View */}
                 {activeSection === 'messages' && (
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                        <table className="w-full">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-x-auto">
+                        <table className="w-full min-w-[800px]">
                             <thead className="bg-gray-50">
                                 <tr className="text-left text-xs font-semibold text-gray-500 uppercase">
                                     <th className="p-5">From</th>
@@ -547,8 +547,8 @@ const AdminDashboard = () => {
                 )}
                 {/* Instructor Requests View */}
                 {activeSection === 'instructors' && (
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                        <table className="w-full">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-x-auto">
+                        <table className="w-full min-w-[800px]">
                             <thead className="bg-gray-50">
                                 <tr className="text-left text-xs font-semibold text-gray-500 uppercase">
                                     <th className="p-5">Instructor</th>
@@ -648,7 +648,7 @@ const AdminDashboard = () => {
             {/* Instructor Details Modal */}
             {viewInstructor && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 animate-fade-in max-h-[90vh] overflow-y-auto">
+                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-4 md:p-6 animate-fade-in max-h-[90vh] overflow-y-auto">
                         <div className="flex justify-between items-start mb-6 border-b border-gray-100 pb-4">
                             <div>
                                 <h2 className="text-2xl font-bold text-navy-900">Instructor Profile</h2>
@@ -798,7 +798,7 @@ const AdminDashboard = () => {
             {/* Reply Modal */}
             {replyModal.show && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 animate-fade-in">
+                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-4 md:p-6 animate-fade-in">
                         <h2 className="text-2xl font-bold text-navy-900 mb-4">Reply to Message</h2>
                         <div className="space-y-4">
                             <div>
@@ -840,7 +840,7 @@ const AdminDashboard = () => {
             {/* View Message Modal */}
             {viewMessage && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 overflow-y-auto max-h-[90vh] animate-fade-in">
+                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-4 md:p-6 overflow-y-auto max-h-[90vh] animate-fade-in">
                         <div className="flex justify-between items-start mb-6 border-b border-gray-100 pb-4">
                             <div>
                                 <h2 className="text-2xl font-bold text-navy-900">Message Details</h2>
@@ -925,7 +925,7 @@ const AdminDashboard = () => {
             {/* View Enrollment Modal */}
             {viewEnrollment && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 animate-fade-in">
+                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-4 md:p-6 animate-fade-in">
                         <div className="flex justify-between items-start mb-6 border-b border-gray-100 pb-4">
                             <div>
                                 <h2 className="text-2xl font-bold text-navy-900">Enrollment Details</h2>

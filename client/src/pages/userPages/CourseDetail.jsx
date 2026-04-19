@@ -137,7 +137,7 @@ const CourseDetail = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="mb-10 rounded-xl overflow-hidden shadow-xl h-48 sm:h-64 relative bg-gray-900">
                         <img
-                            src={course.thumbnail && !course.thumbnail.includes('default') ? `http://localhost:3000/${course.thumbnail.replace(/\\/g, '/')}` : 'https://via.placeholder.com/1200x500'}
+                            src={course.thumbnail && !course.thumbnail.includes('default') ? `${import.meta.env.VITE_API_BASE_URL}/${course.thumbnail.replace(/\\/g, '/')}` : 'https://via.placeholder.com/1200x500'}
                             alt={course.title}
                             className="w-full h-full object-cover opacity-80"
                         />

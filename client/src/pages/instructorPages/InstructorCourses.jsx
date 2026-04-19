@@ -66,10 +66,10 @@ const InstructorCourses = () => {
     };
 
     return (
-        <div className="flex h-screen bg-gray-50 font-sans">
+        <div className="flex h-screen w-full overflow-hidden bg-gray-50 font-sans">
             <Sidebar />
 
-            <main className="flex-1 overflow-y-auto p-4 md:p-8">
+            <main className="flex-1 w-full overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
                 <header className="flex justify-between items-center mb-8">
                     <div>
                         <h1 className="text-3xl font-extrabold text-navy-900 tracking-tight">My Courses</h1>
@@ -85,7 +85,7 @@ const InstructorCourses = () => {
 
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="overflow-x-auto">
-                        <table className="w-full">
+                        <table className="w-full min-w-[800px]">
                             <thead className="bg-gray-50">
                                 <tr className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                                     <th className="p-5">Course</th>
