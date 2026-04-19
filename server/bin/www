@@ -18,7 +18,7 @@ dotenv.config();
  */
 
 var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port); 
+app.set('port', port);
 
 /**
  * Create HTTP server.
@@ -34,7 +34,7 @@ var server = http.createServer(app);
   try {
     await connectDB();
     server.listen(port, () => {
-      console.log(`🚀 Server running on http://localhost:${port}`);
+      console.log(`🚀 Server running`);
     });
 
     server.on("error", onError);

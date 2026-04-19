@@ -66,12 +66,12 @@ const ExploreCourses = () => {
               </div>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-3">
+            <div className="flex overflow-x-auto gap-3 pb-2 custom-scrollbar hide-scrollbar">
               {['All', ...categories.map(c => c.name)].map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setCategory(cat)}
-                  className={`px-6 py-2 rounded-full text-sm font-bold transition ${category === cat
+                  className={`shrink-0 whitespace-nowrap px-6 py-2 rounded-full text-sm font-bold transition ${category === cat
                     ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
                     : 'bg-white text-gray-600 border border-gray-100 hover:bg-gray-50'
                     }`}
