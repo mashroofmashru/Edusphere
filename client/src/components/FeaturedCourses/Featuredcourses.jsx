@@ -57,7 +57,7 @@ const Featuredcourses = () => {
                 duration={course.totalDuration ? `${Math.round(course.totalDuration / 60)} hours` : "Self-paced"}
                 price={`₹${course.price}`}
                 badge={course.level}
-                bgImage={course.thumbnail && !course.thumbnail.includes('default') ? `${import.meta.env.VITE_API_BASE_URL}/${course.thumbnail.replace(/\\/g, '/')}` : 'https://via.placeholder.com/300x200'}
+                bgImage={course.thumbnail && !course.thumbnail.includes('default') ? course.thumbnail.replace(/\\/g, '/') : 'https://via.placeholder.com/300x200'}
               />
             ))
           ) : (

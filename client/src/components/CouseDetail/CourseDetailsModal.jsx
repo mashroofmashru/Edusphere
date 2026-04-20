@@ -23,7 +23,7 @@ const CourseDetailsModal = ({ course, onClose }) => {
                     <div className="flex flex-col md:flex-row gap-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                         <div className="w-full md:w-1/3 aspect-video bg-gray-200 rounded-xl overflow-hidden flex-shrink-0">
                             <img
-                                src={course.thumbnail && !course.thumbnail.includes('default') ? `${baseURL}/${course.thumbnail.replace(/\\/g, '/')}` : 'https://via.placeholder.com/640x360?text=No+Thumbnail'}
+                                src={course.thumbnail && !course.thumbnail.includes('default') ? course.thumbnail.replace(/\\/g, '/') : 'https://via.placeholder.com/640x360?text=No+Thumbnail'}
                                 alt={course.title}
                                 className="w-full h-full object-cover"
                             />

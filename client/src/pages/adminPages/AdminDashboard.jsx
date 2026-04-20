@@ -289,7 +289,7 @@ const AdminDashboard = () => {
                                         <td className="p-5">
                                             <div className="flex items-center gap-3">
                                                 <img
-                                                    src={course.thumbnail && !course.thumbnail.includes('default') ? `${import.meta.env.VITE_API_BASE_URL}/${course.thumbnail.replace(/\\/g, '/')}` : 'https://via.placeholder.com/150'}
+                                                    src={course.thumbnail && !course.thumbnail.includes('default') ? course.thumbnail.replace(/\\/g, '/') : 'https://via.placeholder.com/150'}
                                                     className="w-10 h-10 rounded object-cover bg-gray-200"
                                                     alt=""
                                                 />

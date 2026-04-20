@@ -33,7 +33,7 @@ module.exports = {
             if (!req.file) {
                 return res.status(400).json({ success: false, message: "No video file uploaded" });
             }
-            const videoUrl = `${req.file.path.replace(/\\/g, "/")}`;
+            const videoUrl = req.file.path;
             res.status(200).json({ success: true, url: videoUrl });
         } catch (err) {
             console.error(err);
@@ -94,7 +94,7 @@ module.exports = {
                 updateData.sections = JSON.parse(updateData.sections);
             }
             if (req.file) {
-                updateData.thumbnail = req.file.path.replace(/\\/g, "/");
+                updateData.thumbnail = req.file.path;
             }
 
             const updatedCourse = await Course.findByIdAndUpdate(courseId, updateData, { new: true });
