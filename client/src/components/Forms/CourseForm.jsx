@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import api, { baseURL } from '../../config/server';
+import api from '../../config/server';
 
 const CourseForm = ({ onClose, onSubmit, loading, initialData }) => {
   const isEditMode = !!initialData;
   const [activeTab, setActiveTab] = useState(1);
-  const [thumbnailPreview, setThumbnailPreview] = useState(initialData?.thumbnail ? `${baseURL}/${initialData.thumbnail}` : null);
+  const [thumbnailPreview, setThumbnailPreview] = useState(initialData?.thumbnail ? `${initialData.thumbnail}` : null);
   const [thumbnailFile, setThumbnailFile] = useState(null);
   const [videoUploading, setVideoUploading] = useState({}); // { "sIndex-lIndex": boolean }
   const [errors, setErrors] = useState({}); // Validation errors
