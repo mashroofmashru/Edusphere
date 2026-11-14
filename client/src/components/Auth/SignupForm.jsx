@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import FormHeader from './FormHeader';
 import InputField from './InputField';
-import FormFooter from './FormFooter';
+import { FormAlert, SubmitButton, SwitchLine } from './FormParts';
+
+const ROLES = [
+  { value: 'user', title: 'Learn', desc: 'Enroll in courses' },
+  { value: 'instructor', title: 'Teach', desc: 'Reviewed by an admin first' },
+];
 import api from '../../config/server';
 import { useAuth } from '../../context/AuthContext';
 import { useUI } from '../../context/UIContext';
@@ -75,101 +79,89 @@ const SignupForm = ({ onFlip }) => {
 
   return (
     <>
-      <FormHeader title="Create Account" subtitle="Start your learning journey today" />
+      <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
+      <p className="mt-1.5 text-sm text-gray-600">Free to join. Takes under a minute.</p>
 
-      <div className="form-body">
-        <div className="form-content">
-          <form onSubmit={handleSubmit}>
-            {error && (
-              <div className="form-alert" role="alert">
-                <i className="fas fa-exclamation-circle" aria-hidden="true"></i>
-                <span>{error}</span>
-              </div>
-            )}
+      <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+        {error && <FormAlert>{error}</FormAlert>}
 
-            <fieldset className="role-picker">
-              <legend className="form-label">I want to</legend>
-              <div className="role-options">
-                {[
-                  { value: 'user', icon: 'fa-user-graduate', title: 'Learn', desc: 'Take courses' },
-                  { value: 'instructor', icon: 'fa-chalkboard-teacher', title: 'Teach', desc: 'Needs admin approval' },
-                ].map((opt) => (
-                  <label key={opt.value} className={`role-option ${role === opt.value ? 'selected' : ''}`}>
-                    <input
-                      type="radio"
-                      name="signup-role"
-                      value={opt.value}
-                      checked={role === opt.value}
-                      onChange={() => setRole(opt.value)}
-                    />
-                    <i className={`fas ${opt.icon}`} aria-hidden="true"></i>
-                    <span className="role-title">{opt.title}</span>
-                    <span className="role-desc">{opt.desc}</span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
+        <fieldset>
+          <legend className="mb-1.5 text-sm font-medium text-gray-900">I want to</legend>
+          <div className="grid grid-cols-2 gap-2">
+            {ROLES.map((opt) => {
+              const selected = role === opt.value;
+              return (
+                <label
+                  key={opt.value}
+                  className={`relative cursor-pointer rounded-lg border px-3 py-2.5 transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-blue-600 has-[:focus-visible]:ring-offset-2 ${
+                    selected ? 'border-blue-600 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="signup-role"
+                    value={opt.value}
+                    checked={selected}
+                    onChange={() => setRole(opt.value)}
+                    className="sr-only"
+                  />
+                  <span className={`block text-sm font-semibold ${selected ? 'text-blue-700' : 'text-gray-900'}`}>{opt.title}</span>
+                  <span className="block text-xs text-gray-500">{opt.desc}</span>
+                </label>
+              );
+            })}
+          </div>
+        </fieldset>
 
-            <InputField
-              type="text"
-              id="fullName"
-              label="Full Name"
-              icon="user"
-              placeholder="Enter your full name"
-              autoComplete="name"
-              value={name}
-              onChange={clear(setName)}
-              required
-            />
+        <InputField
+          type="text"
+          id="fullName"
+          label="Full name"
+          autoComplete="name"
+          value={name}
+          onChange={clear(setName)}
+          required
+        />
 
-            <InputField
-              type="email"
-              id="signupEmail"
-              label="Email Address"
-              icon="envelope"
-              placeholder="Enter your email"
-              autoComplete="email"
-              value={email}
-              onChange={clear(setEmail)}
-              required
-            />
+        <InputField
+          type="email"
+          id="signupEmail"
+          label="Email"
+          placeholder="you@example.com"
+          autoComplete="email"
+          value={email}
+          onChange={clear(setEmail)}
+          required
+        />
 
-            <InputField
-              type="password"
-              id="signupPassword"
-              label="Password"
-              icon="lock"
-              placeholder="Create a password"
-              autoComplete="new-password"
-              hint={`At least ${MIN_PASSWORD} characters`}
-              error={passwordError}
-              minLength={MIN_PASSWORD}
-              value={password}
-              onChange={clear(setPassword)}
-              required
-            />
+        <InputField
+          type="password"
+          id="signupPassword"
+          label="Password"
+          autoComplete="new-password"
+          hint={`At least ${MIN_PASSWORD} characters`}
+          error={passwordError}
+          minLength={MIN_PASSWORD}
+          value={password}
+          onChange={clear(setPassword)}
+          required
+        />
 
-            <InputField
-              type="password"
-              id="confirmPassword"
-              label="Confirm Password"
-              icon="lock"
-              placeholder="Confirm your password"
-              autoComplete="new-password"
-              error={confirmError}
-              value={confPassword}
-              onChange={clear(setConfPassword)}
-              required
-            />
+        <InputField
+          type="password"
+          id="confirmPassword"
+          label="Confirm password"
+          autoComplete="new-password"
+          error={confirmError}
+          value={confPassword}
+          onChange={clear(setConfPassword)}
+          required
+        />
 
-            <button type="submit" className="submit-btn" disabled={loading}>
-              {loading ? <><i className="fas fa-spinner fa-spin" aria-hidden="true"></i> Creating Account...</> : 'Create Account'}
-            </button>
-          </form>
-        </div>
+        <SubmitButton loading={loading} loadingText="Creating account...">Create account</SubmitButton>
+      </form>
 
-        <FormFooter text="Already have an account?" buttonText="Sign In" onButtonClick={onFlip} />
-      </div>
+      <SwitchLine text="Already have an account?" buttonText="Sign in" onClick={onFlip} />
     </>
   );
 };

@@ -4,7 +4,6 @@ const InputField = ({
   type,
   id,
   label,
-  icon,
   placeholder,
   value,
   onChange,
@@ -13,32 +12,32 @@ const InputField = ({
   hint,
   error,
   minLength,
+  aside,
 }) => {
-  const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === 'password';
   const describedBy = [hint && `${id}-hint`, error && `${id}-error`].filter(Boolean).join(' ') || undefined;
 
   return (
-    <div className="form-group">
-      <label className="form-label" htmlFor={id}>
-        {label}
-      </label>
-      <div className={`input-container ${isFocused ? 'focused' : ''} ${error ? 'has-error' : ''}`}>
-        <i
-          className={`fas fa-${icon} input-icon`}
-          style={{ color: error ? '#dc2626' : isFocused ? '#2563eb' : '#64748b' }}
-          aria-hidden="true"
-        ></i>
+    <div>
+      <div className="flex items-baseline justify-between mb-1.5">
+        <label htmlFor={id} className="text-sm font-medium text-gray-900">
+          {label}
+        </label>
+        {aside}
+      </div>
+      <div className="relative">
         <input
           type={isPassword && showPassword ? 'text' : type}
           id={id}
-          className={`form-input ${isPassword ? 'has-toggle' : ''}`}
+          className={`block w-full rounded-lg border bg-white px-3 py-2.5 text-[15px] text-gray-900 placeholder:text-gray-400 transition-colors focus:outline-none focus:ring-2 ${
+            error
+              ? 'border-red-400 focus:border-red-500 focus:ring-red-100'
+              : 'border-gray-300 focus:border-blue-600 focus:ring-blue-100'
+          } ${isPassword ? 'pr-16' : ''}`}
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
           required={required}
           autoComplete={autoComplete}
           minLength={minLength}
@@ -48,16 +47,17 @@ const InputField = ({
         {isPassword && (
           <button
             type="button"
-            className="password-toggle"
             onClick={() => setShowPassword((s) => !s)}
+            className="absolute inset-y-0 right-0 px-3 text-xs font-semibold text-gray-500 hover:text-gray-900"
             aria-label={showPassword ? 'Hide password' : 'Show password'}
+            aria-pressed={showPassword}
           >
-            <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`} aria-hidden="true"></i>
+            {showPassword ? 'Hide' : 'Show'}
           </button>
         )}
       </div>
-      {hint && !error && <p id={`${id}-hint`} className="form-hint">{hint}</p>}
-      {error && <p id={`${id}-error`} className="form-error-text">{error}</p>}
+      {hint && !error && <p id={`${id}-hint`} className="mt-1.5 text-xs text-gray-500">{hint}</p>}
+      {error && <p id={`${id}-error`} className="mt-1.5 text-xs font-medium text-red-600">{error}</p>}
     </div>
   );
 };

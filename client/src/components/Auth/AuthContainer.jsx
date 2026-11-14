@@ -1,25 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import AuthCard from './AuthCard';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
-import './Auth.css';
 
 const AuthContainer = () => {
   const location = useLocation();
-  // Links can open the card on the sign-up side via <Link state={{ mode: 'signup' }}>
-  const [isFlipped, setIsFlipped] = useState(location.state?.mode === 'signup');
+  // Links can open the sign-up form directly via <Link state={{ mode: 'signup' }}>
+  const [mode, setMode] = useState(location.state?.mode === 'signup' ? 'signup' : 'login');
+  const panelRef = useRef(null);
+  const switched = useRef(false);
 
   useEffect(() => {
-    if (location.state?.mode) setIsFlipped(location.state.mode === 'signup');
+    if (location.state?.mode) setMode(location.state.mode === 'signup' ? 'signup' : 'login');
   }, [location.state?.mode]);
 
+  useEffect(() => {
+    document.title = `${mode === 'signup' ? 'Create Account' : 'Sign In'} | EduSphere`;
+    // After switching forms, move focus to the first field so keyboard users aren't lost
+    if (switched.current) panelRef.current?.querySelector('input:not([type="radio"])')?.focus();
+  }, [mode]);
+
+  const switchTo = (next) => {
+    switched.current = true;
+    setMode(next);
+  };
+
   return (
-    <div className="auth-container">
-      <AuthCard isFlipped={isFlipped}>
-        <LoginForm onFlip={() => setIsFlipped(true)} active={!isFlipped} />
-        <SignupForm onFlip={() => setIsFlipped(false)} active={isFlipped} />
-      </AuthCard>
+    <div ref={panelRef} key={mode} className="w-full max-w-sm animate-fade-in-up">
+      {mode === 'login' ? (
+        <LoginForm onFlip={() => switchTo('signup')} />
+      ) : (
+        <SignupForm onFlip={() => switchTo('login')} />
+      )}
     </div>
   );
 };

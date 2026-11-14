@@ -30,11 +30,11 @@ const Featuredcourses = () => {
 
   return (
     <section className="py-16 bg-white">
-      <div className="container mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-2xl sm:text-3xl font-bold text-navy-900 mb-4">Featured Courses</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-navy-900 mb-4">Top rated courses</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Our top-rated courses, chosen by learners like you, to help you advance your career.
+            The highest rated courses on EduSphere right now.
           </p>
         </div>
 
@@ -44,13 +44,13 @@ const Featuredcourses = () => {
           ) : courses.length > 0 ? (
             courses.map((course) => <CourseCard key={course._id} {...toCardProps(course)} />)
           ) : (
-            <div className="col-span-full text-center text-gray-500 py-10">New courses are on their way. Check back soon!</div>
+            <div className="col-span-full text-center text-gray-500 py-10">No courses published yet. Check back soon.</div>
           )}
         </div>
 
         <div className="text-center mt-12">
           <Link to="/viewCourses" className="inline-block px-8 py-3 bg-white border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition font-medium">
-            View All Courses
+            See all courses
           </Link>
         </div>
       </div>

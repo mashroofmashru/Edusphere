@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import FormHeader from './FormHeader';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import InputField from './InputField';
-import FormOptions from './FormOptions';
-import FormFooter from './FormFooter';
+import { FormAlert, SubmitButton, SwitchLine } from './FormParts';
 import api from '../../config/server';
 import { useAuth } from '../../context/AuthContext';
 import { useUI } from '../../context/UIContext';
@@ -52,52 +50,43 @@ const LoginForm = ({ onFlip }) => {
 
   return (
     <>
-      <FormHeader title="Welcome Back" subtitle="Sign in to continue your learning journey" />
+      <h1 className="text-2xl font-bold text-gray-900">Sign in</h1>
+      <p className="mt-1.5 text-sm text-gray-600">Pick up where you left off.</p>
 
-      <div className="form-body">
-        <div className="form-content">
-          <form onSubmit={handleSubmit} noValidate={false}>
-            {error && (
-              <div className="form-alert" role="alert">
-                <i className="fas fa-exclamation-circle" aria-hidden="true"></i>
-                <span>{error}</span>
-              </div>
-            )}
+      <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+        {error && <FormAlert>{error}</FormAlert>}
 
-            <InputField
-              type="email"
-              id="loginEmail"
-              label="Email Address"
-              icon="envelope"
-              placeholder="Enter your email"
-              autoComplete="email"
-              value={formData.email}
-              onChange={(value) => handleChange('email', value)}
-              required
-            />
+        <InputField
+          type="email"
+          id="loginEmail"
+          label="Email"
+          placeholder="you@example.com"
+          autoComplete="email"
+          value={formData.email}
+          onChange={(value) => handleChange('email', value)}
+          required
+        />
 
-            <InputField
-              type="password"
-              id="loginPassword"
-              label="Password"
-              icon="lock"
-              placeholder="Enter your password"
-              autoComplete="current-password"
-              value={formData.password}
-              onChange={(value) => handleChange('password', value)}
-              required
-            />
+        <InputField
+          type="password"
+          id="loginPassword"
+          label="Password"
+          autoComplete="current-password"
+          value={formData.password}
+          onChange={(value) => handleChange('password', value)}
+          required
+          aside={
+            // No self-service reset endpoint yet, so point people to support.
+            <Link to="/about#contact" className="text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline">
+              Forgot password?
+            </Link>
+          }
+        />
 
-            <FormOptions />
+        <SubmitButton loading={loading} loadingText="Signing in...">Sign in</SubmitButton>
+      </form>
 
-            <button type="submit" className="submit-btn" disabled={loading}>
-              {loading ? <><i className="fas fa-spinner fa-spin" aria-hidden="true"></i> Signing In...</> : 'Sign In'}
-            </button>
-          </form>
-        </div>
-
-        <FormFooter text="Don't have an account?" buttonText="Sign Up" onButtonClick={onFlip} />
-      </div>
+      <SwitchLine text="New to EduSphere?" buttonText="Create an account" onClick={onFlip} />
     </>
   );
 };

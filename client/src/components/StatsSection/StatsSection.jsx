@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../config/server';
 
-const LABELS = ['Active Students', 'Courses Available', 'Satisfaction Rate'];
+const LABELS = ['Learners', 'Courses', 'Satisfaction'];
 
 const StatsSection = () => {
   // null = still loading; never flash made-up numbers before the real ones arrive
@@ -25,7 +25,7 @@ const StatsSection = () => {
 
   return (
     <section className="py-16 bg-gradient-to-r from-blue-50 to-blue-100" aria-label="Platform statistics">
-      <div className="container mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-center">
           {LABELS.map((label, index) => (
             <div key={label} className="bg-white p-8 rounded-xl shadow-sm">

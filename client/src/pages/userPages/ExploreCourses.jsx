@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import CourseCard from "../../components/Card/CourseCard";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/FooterHome";
-import { CardSkeleton, EmptyState } from "../../components/UI/Feedback";
+import { CardSkeleton } from "../../components/UI/Feedback";
 import { toCardProps } from "../../utils/format";
 import api from "../../config/server";
 
@@ -14,13 +15,15 @@ const SORTS = {
   priceHigh: (a, b) => Number(b.price) - Number(a.price),
 };
 
-const selectClass = "p-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-navy-900 focus:ring-2 focus:ring-blue-500 outline-none";
+const selectClass = "rounded-lg border border-gray-300 bg-white py-2 pl-3 pr-8 text-sm text-gray-700 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
 
 const ExploreCourses = () => {
+  // The home page search sends people here with ?search=...
+  const [searchParams] = useSearchParams();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("All");
+  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const [category, setCategory] = useState(searchParams.get("category") || "All");
   const [categories, setCategories] = useState([]);
   const [level, setLevel] = useState("All");
   const [price, setPrice] = useState("All");
@@ -68,107 +71,98 @@ const ExploreCourses = () => {
   const firstLoad = loading && courses.length === 0;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
-      <main className="flex-1 pt-10 pb-16">
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 sm:mb-12">
-            <p className="text-sm font-semibold tracking-wide text-blue-600 uppercase">Explore All Courses</p>
-            <h1 className="mt-2 text-2xl sm:text-4xl font-bold text-navy-900">Find the right course for your next step</h1>
-            <p className="mt-4 text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
-              Browse our complete catalog of expert-led courses and discover the perfect learning path to grow your skills.
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Courses</h1>
+            <p className="mt-1 text-sm text-gray-500" aria-live="polite">
+              {firstLoad
+                ? 'Loading…'
+                : `${visible.length} course${visible.length === 1 ? '' : 's'}${search ? ` matching "${search}"` : ''}`}
+              {loading && !firstLoad && <i className="fas fa-spinner fa-spin ml-2 text-gray-400" aria-hidden="true"></i>}
             </p>
           </div>
 
-          <div className="mb-8 space-y-5">
-            <div className="max-w-xl mx-auto">
-              <div className="relative group">
-                <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-600 transition" aria-hidden="true"></i>
-                <input
-                  type="text"
-                  aria-label="Search courses"
-                  placeholder="Search courses by title..."
-                  className="w-full pl-12 pr-12 py-3 bg-white border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 outline-none transition"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-                {search && (
-                  <button
-                    onClick={() => setSearch("")}
-                    aria-label="Clear search"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition"
-                  >
-                    <i className="fas fa-times" aria-hidden="true"></i>
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <div className="flex overflow-x-auto gap-3 pb-2 hide-scrollbar" role="group" aria-label="Category">
-              {['All', ...categories.map(c => c.name)].map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setCategory(cat)}
-                  aria-pressed={category === cat}
-                  className={`shrink-0 whitespace-nowrap px-5 py-2 rounded-full text-sm font-bold transition ${category === cat
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
-                    : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
-                    }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
-              <p className="text-sm text-gray-500" aria-live="polite">
-                {firstLoad ? 'Loading courses…' : `${visible.length} course${visible.length === 1 ? '' : 's'}${search ? ` for "${search}"` : ''}`}
-                {loading && !firstLoad && <i className="fas fa-spinner fa-spin ml-2 text-blue-600" aria-hidden="true"></i>}
-              </p>
-              <div className="grid grid-cols-3 sm:flex gap-2">
-                <select aria-label="Level" value={level} onChange={(e) => setLevel(e.target.value)} className={selectClass}>
-                  <option value="All">All levels</option>
-                  <option>Beginner</option>
-                  <option>Intermediate</option>
-                  <option>Advanced</option>
-                </select>
-                <select aria-label="Price" value={price} onChange={(e) => setPrice(e.target.value)} className={selectClass}>
-                  <option value="All">Any price</option>
-                  <option value="Free">Free</option>
-                  <option value="Paid">Paid</option>
-                </select>
-                <select aria-label="Sort by" value={sort} onChange={(e) => setSort(e.target.value)} className={selectClass}>
-                  <option value="popular">Most popular</option>
-                  <option value="rating">Highest rated</option>
-                  <option value="newest">Newest</option>
-                  <option value="priceLow">Price: low to high</option>
-                  <option value="priceHigh">Price: high to low</option>
-                </select>
-              </div>
-            </div>
+          <div className="relative w-full md:w-80">
+            <i className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400" aria-hidden="true"></i>
+            <input
+              type="search"
+              aria-label="Search courses"
+              placeholder="Search by title"
+              className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-3 text-[15px] placeholder:text-gray-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
+        </div>
 
-          <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 transition-opacity ${loading && !firstLoad ? 'opacity-60' : ''}`}>
-            {firstLoad ? (
-              Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)
-            ) : visible.length > 0 ? (
-              visible.map((course) => <CourseCard key={course._id} {...toCardProps(course)} />)
-            ) : (
-              <div className="col-span-full bg-white rounded-2xl border border-gray-100">
-                {filtersActive ? (
-                  <EmptyState
-                    icon="fa-search"
-                    title="No matching courses"
-                    message={search ? `We couldn't find anything for "${search}". Try another keyword or remove some filters.` : 'Try removing some filters.'}
-                    action={<button onClick={resetFilters} className="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition">Clear all filters</button>}
-                  />
-                ) : (
-                  <EmptyState icon="fa-book-open" title="No courses yet" message="New courses are on their way. Check back soon!" />
-                )}
-              </div>
-            )}
+        <div className="mt-6 border-b border-gray-200">
+          <div className="flex gap-6 overflow-x-auto hide-scrollbar -mb-px" role="group" aria-label="Category">
+            {['All', ...categories.map(c => c.name)].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setCategory(cat)}
+                aria-pressed={category === cat}
+                className={`shrink-0 whitespace-nowrap border-b-2 pb-2.5 text-sm font-medium transition ${category === cat
+                  ? 'border-blue-600 text-gray-900'
+                  : 'border-transparent text-gray-500 hover:text-gray-900'
+                  }`}
+              >
+                {cat === 'All' ? 'All courses' : cat}
+              </button>
+            ))}
           </div>
-        </section>
+        </div>
+
+        <div className="mt-4 mb-6 flex flex-wrap items-center gap-2">
+          <select aria-label="Level" value={level} onChange={(e) => setLevel(e.target.value)} className={selectClass}>
+            <option value="All">Any level</option>
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+          </select>
+          <select aria-label="Price" value={price} onChange={(e) => setPrice(e.target.value)} className={selectClass}>
+            <option value="All">Any price</option>
+            <option value="Free">Free</option>
+            <option value="Paid">Paid</option>
+          </select>
+          <select aria-label="Sort by" value={sort} onChange={(e) => setSort(e.target.value)} className={`${selectClass} sm:ml-auto`}>
+            <option value="popular">Most popular</option>
+            <option value="rating">Highest rated</option>
+            <option value="newest">Newest</option>
+            <option value="priceLow">Price: low to high</option>
+            <option value="priceHigh">Price: high to low</option>
+          </select>
+          {filtersActive && (
+            <button onClick={resetFilters} className="text-sm font-medium text-blue-600 hover:underline px-1">
+              Clear filters
+            </button>
+          )}
+        </div>
+
+        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8 transition-opacity ${loading && !firstLoad ? 'opacity-60' : ''}`}>
+          {firstLoad ? (
+            Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)
+          ) : visible.length > 0 ? (
+            visible.map((course) => <CourseCard key={course._id} {...toCardProps(course)} />)
+          ) : (
+            <div className="col-span-full py-12 text-center">
+              {filtersActive ? (
+                <>
+                  <p className="font-medium text-gray-900">Nothing matches that.</p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    {search ? `No courses for "${search}". Try a different word or ` : 'Try '}
+                    <button onClick={resetFilters} className="font-medium text-blue-600 hover:underline">clearing the filters</button>.
+                  </p>
+                </>
+              ) : (
+                <p className="text-gray-500">No courses published yet. Check back soon.</p>
+              )}
+            </div>
+          )}
+        </div>
       </main>
       <Footer />
     </div>

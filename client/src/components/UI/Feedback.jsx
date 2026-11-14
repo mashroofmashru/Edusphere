@@ -40,12 +40,12 @@ export const TableSkeleton = ({ rows = 5, cols = 4 }) => (
 );
 
 export const CardSkeleton = () => (
-  <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
-    <div className="aspect-video bg-gray-100 animate-pulse"></div>
-    <div className="p-5 space-y-3">
-      <div className="h-5 bg-gray-100 rounded animate-pulse w-3/4"></div>
-      <div className="h-4 bg-gray-100 rounded animate-pulse"></div>
-      <div className="h-4 bg-gray-100 rounded animate-pulse w-1/2"></div>
+  <div>
+    <div className="aspect-video rounded-lg bg-gray-100 animate-pulse"></div>
+    <div className="pt-3 space-y-2">
+      <div className="h-4 bg-gray-100 rounded animate-pulse w-3/4"></div>
+      <div className="h-3.5 bg-gray-100 rounded animate-pulse"></div>
+      <div className="h-3.5 bg-gray-100 rounded animate-pulse w-1/2"></div>
     </div>
   </div>
 );

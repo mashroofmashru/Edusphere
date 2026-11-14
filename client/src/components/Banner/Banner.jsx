@@ -8,31 +8,31 @@ const Banner = () => {
   const features = [
     {
       icon: "fas fa-book",
-      title: "Interactive Lessons",
-      description: "Engaging content with quizzes"
+      title: "Videos, readings and quizzes",
+      description: "Check what you learned as you go"
     },
     {
       icon: "fas fa-laptop",
-      title: "Learn Anywhere",
-      description: "Access on all devices"
+      title: "Works on any device",
+      description: "Phone, tablet or laptop. Nothing to install"
     },
     {
       icon: "fas fa-certificate",
-      title: "Earn Certificates",
-      description: "Showcase your skills"
+      title: "Certificate when you finish",
+      description: "Download it and share it with its own ID"
     }
   ];
 
   return (
     <section className="bg-gradient-to-r from-navy-900 to-blue-800 text-white py-16 md:py-24">
-      <div className="container mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 mb-10 md:mb-0">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-tight">
-              Unlock Your Potential with Online Learning
+              Learn something useful, at your own pace
             </h1>
             <p className="text-lg sm:text-xl mb-8 text-blue-100">
-              Access thousands of courses taught by industry experts. Learn at your own pace and achieve your goals.
+              Practical courses from instructors we have checked. Many are free, and every lesson comes with an AI tutor for when you get stuck.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/viewCourses" className="px-6 py-3 bg-blue-500 hover:bg-blue-400 text-white rounded-lg transition font-bold text-center shadow-lg shadow-blue-900/30">
@@ -46,7 +46,7 @@ const Banner = () => {
                 )
               ) : (
                 <Link to="/auth" state={{ mode: 'signup' }} className="px-6 py-3 bg-transparent border-2 border-white rounded-lg hover:bg-white hover:text-navy-900 transition font-medium text-center">
-                  Get Started Free
+                  Create a free account
                 </Link>
               )}
             </div>
