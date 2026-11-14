@@ -74,14 +74,20 @@ const courseSchema = new mongoose.Schema({
     enum: ['Draft', 'Published', 'Archived'],
     default: 'Draft'
   }
-}, { timestamps: true });
+}, {
+  timestamps: true,
+  // Include virtuals (totalDuration) when courses are sent as JSON
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
 
-// Virtual for total course duration
+// Virtual for total course duration (minutes). Guarded so queries that
+// don't select `sections` still serialise safely (they return 0).
 courseSchema.virtual('totalDuration').get(function () {
   let total = 0;
-  this.sections.forEach(section => {
-    section.lessons.forEach(lesson => {
-      total += lesson.duration;
+  (this.sections || []).forEach(section => {
+    (section.lessons || []).forEach(lesson => {
+      total += Number(lesson.duration) || 0;
     });
   });
   return total;

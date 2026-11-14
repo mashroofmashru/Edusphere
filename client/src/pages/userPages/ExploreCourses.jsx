@@ -7,7 +7,7 @@ import { toCardProps } from "../../utils/format";
 import api from "../../config/server";
 
 const SORTS = {
-  popular: (a, b) => (b.enrolledStudents?.length || 0) - (a.enrolledStudents?.length || 0),
+  popular: (a, b) => (b.enrollCount || 0) - (a.enrollCount || 0),
   rating: (a, b) => (Number(b.rating) || 0) - (Number(a.rating) || 0),
   newest: (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0),
   priceLow: (a, b) => Number(a.price) - Number(b.price),

@@ -60,19 +60,51 @@ module.exports = {
     },
     getAllCourses: async (req, res) => {
         try {
-            const { search, category } = req.query;
-            let query = { status: 'Published' };
+            const { search, category, sort, limit } = req.query;
+            const query = { status: 'Published' };
 
             if (search) {
-                query.title = { $regex: search, $options: 'i' };
+                // Escape regex metacharacters so user input is matched literally
+                const safe = String(search).slice(0, 100).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                query.title = { $regex: safe, $options: 'i' };
             }
             if (category && category !== 'All') {
-                query.category = category;
+                query.category = String(category);
             }
 
-            const courses = await Course.find(query)
-                .select('title subtitle price thumbnail category rating instructor')
-                .populate('instructor', 'name');
+            const SORTS = {
+                rating: { rating: -1, enrollCount: -1, _id: -1 },
+                popular: { enrollCount: -1, rating: -1, _id: -1 },
+                newest: { createdAt: -1, _id: -1 },
+            };
+
+            const pipeline = [
+                { $match: query },
+                {
+                    $project: {
+                        title: 1, subtitle: 1, price: 1, thumbnail: 1, category: 1,
+                        rating: 1, level: 1, instructor: 1, createdAt: 1,
+                        enrollCount: { $size: { $ifNull: ['$enrolledStudents', []] } },
+                        totalDuration: {
+                            $sum: {
+                                $map: {
+                                    input: { $ifNull: ['$sections', []] },
+                                    as: 's',
+                                    in: { $sum: { $ifNull: ['$$s.lessons.duration', []] } }
+                                }
+                            }
+                        }
+                    }
+                },
+                { $sort: SORTS[sort] || SORTS.newest },
+            ];
+
+            const max = parseInt(limit, 10);
+            if (max > 0) pipeline.push({ $limit: Math.min(max, 100) });
+
+            const courses = await Course.aggregate(pipeline);
+            await Course.populate(courses, { path: 'instructor', select: 'name' });
+
             res.status(200).json({ success: true, data: courses });
         } catch (err) {
             console.error(err);

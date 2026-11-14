@@ -10,15 +10,11 @@ const Featuredcourses = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get('/users/all-courses')
+    // Ask the server for just the top 3 (highest rated, then most enrolled)
+    // instead of downloading every course and discarding the rest.
+    api.get('/users/all-courses', { params: { sort: 'rating', limit: 3 } })
       .then(({ data }) => {
-        if (data.success && data.data.length > 0) {
-          // Highest-rated first, then most enrolled, so the section is stable between visits
-          const ranked = [...data.data].sort((a, b) =>
-            (Number(b.rating) || 0) - (Number(a.rating) || 0) ||
-            (b.enrolledStudents?.length || 0) - (a.enrolledStudents?.length || 0));
-          setCourses(ranked.slice(0, 3));
-        }
+        if (data.success) setCourses(data.data || []);
       })
       .catch((error) => console.error('Failed to fetch featured courses', error))
       .finally(() => setLoading(false));
