@@ -5,16 +5,24 @@ import api from '../../config/server';
 import { CardSkeleton } from '../UI/Feedback';
 import { toCardProps } from '../../utils/format';
 
+// Matches the 3-column grid on desktop, so the section is one tidy row.
+const FEATURED_COUNT = 3;
+
 const Featuredcourses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Ask the server for just the top 3 (highest rated, then most enrolled)
-    // instead of downloading every course and discarding the rest.
-    api.get('/users/all-courses', { params: { sort: 'rating', limit: 3 } })
+    // Ask the server for just the top courses (highest rated, then most enrolled).
+    // Also rank and trim here, so the section never shows more than FEATURED_COUNT
+    // even if an older backend ignores `limit`/`sort`.
+    api.get('/users/all-courses', { params: { sort: 'rating', limit: FEATURED_COUNT } })
       .then(({ data }) => {
-        if (data.success) setCourses(data.data || []);
+        if (!data.success) return;
+        const ranked = [...(data.data || [])].sort((a, b) =>
+          (Number(b.rating) || 0) - (Number(a.rating) || 0) ||
+          (b.enrollCount ?? b.enrolledStudents?.length ?? 0) - (a.enrollCount ?? a.enrolledStudents?.length ?? 0));
+        setCourses(ranked.slice(0, FEATURED_COUNT));
       })
       .catch((error) => console.error('Failed to fetch featured courses', error))
       .finally(() => setLoading(false));
