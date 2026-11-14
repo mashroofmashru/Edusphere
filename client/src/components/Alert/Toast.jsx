@@ -1,42 +1,38 @@
 import React, { useEffect } from "react";
-// Change: Using standard CheckCircle and AlertCircle
-import { CheckCircle, AlertCircle, X } from "lucide-react";
+
+const STYLES = {
+  success: { icon: "fa-check-circle", color: "text-green-500", border: "border-green-100" },
+  error: { icon: "fa-exclamation-circle", color: "text-red-500", border: "border-red-100" },
+  info: { icon: "fa-info-circle", color: "text-blue-500", border: "border-blue-100" },
+  warning: { icon: "fa-exclamation-triangle", color: "text-amber-500", border: "border-amber-100" },
+};
 
 const Toast = ({ show, message, type = "success", onClose }) => {
   useEffect(() => {
-    if (show) {
-      const timer = setTimeout(() => {
-        onClose();
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [show, onClose]);
+    if (!show) return;
+    const timer = setTimeout(onClose, 3500);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show, message]);
 
   if (!show) return null;
+  const style = STYLES[type] || STYLES.success;
 
   return (
+    // Top-right so it never collides with the floating chat button
     <div
-      className={`fixed bottom-8 right-8 z-[120] flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl border animate-in slide-in-from-right duration-300 ${
-        type === "success"
-          ? "bg-white border-green-100 text-green-800"
-          : "bg-white border-red-100 text-red-800"
-      }`}
+      role={type === "error" ? "alert" : "status"}
+      className={`fixed top-20 right-4 left-4 sm:left-auto sm:max-w-sm z-[120] flex items-start gap-3 px-5 py-4 rounded-xl shadow-2xl border bg-white text-gray-800 animate-slide-in-right ${style.border}`}
     >
-      {/* Ensure these are rendered as components <Icon /> */}
-      {type === "success" ? (
-        <CheckCircle className="text-green-500" size={20} />
-      ) : (
-        <AlertCircle className="text-red-500" size={20} />
-      )}
-      
-      <span className="font-bold text-sm whitespace-nowrap">{message}</span>
-
-      <button 
+      <i className={`fas ${style.icon} ${style.color} text-lg mt-0.5`} aria-hidden="true"></i>
+      <span className="font-semibold text-sm flex-1 break-words">{message}</span>
+      <button
         onClick={onClose}
-        type="button" // Always add type="button" inside forms to prevent accidental submission
-        className="ml-2 p-1 hover:bg-gray-100 rounded-full transition-colors text-gray-400"
+        type="button"
+        aria-label="Dismiss notification"
+        className="p-1 -m-1 hover:bg-gray-100 rounded-full transition-colors text-gray-400"
       >
-        <X size={14} />
+        <i className="fas fa-times text-xs" aria-hidden="true"></i>
       </button>
     </div>
   );

@@ -5,13 +5,18 @@ import App from './App.jsx'
 import ErrorBoundary from './ErrorBoundary.jsx'
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.jsx';
+import { UIProvider } from './context/UIContext.jsx';
 
 createRoot(document.getElementById('root')).render(
-  <ErrorBoundary>
-    <BrowserRouter>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
-    </BrowserRouter>
-  </ErrorBoundary>,
+  <StrictMode>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <UIProvider>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </UIProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
+  </StrictMode>,
 )

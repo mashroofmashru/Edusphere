@@ -2,56 +2,53 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect } from 'react';
 import api from '../../config/server';
+import { Spinner } from '../UI/Feedback';
 
 const ProtectedRoute = ({ allowedRoles }) => {
     const { user, isAuthenticated } = useAuth();
     const location = useLocation();
     const [instructorStatus, setInstructorStatus] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(user?.role === 'instructor');
 
     useEffect(() => {
+        let cancelled = false;
         const checkStatus = async () => {
             if (user?.role === 'instructor') {
                 try {
                     const { data } = await api.get('/users/profile');
-                    setInstructorStatus(data.data.instructorStatus);
+                    if (!cancelled) setInstructorStatus(data.data.instructorStatus);
                 } catch (err) {
                     console.error("Failed to check status", err);
                 }
             }
-            setLoading(false);
+            if (!cancelled) setLoading(false);
         };
 
-        if (isAuthenticated) {
-            checkStatus();
-        } else {
-            setLoading(false);
-        }
-    }, [isAuthenticated, user]);
+        if (isAuthenticated) checkStatus();
+        else setLoading(false);
+        return () => { cancelled = true; };
+    }, [isAuthenticated, user?.role]);
 
     if (!isAuthenticated) {
-        return <Navigate to="/auth" replace />;
+        return <Navigate to="/auth" replace state={{ from: location.pathname }} />;
     }
 
     if (allowedRoles && !allowedRoles.includes(user.role)) {
         return <Navigate to="/" replace />;
     }
 
-    // Special check for instructors
-    if (user.role === 'instructor' && !loading) {
-        // Allow access to settings page always
-        if (location.pathname === '/instructor/settings') {
-            return <Outlet />;
-        }
-
-        // Block other instructor pages if not approved
-        if (instructorStatus !== 'approved') {
-            return <Navigate to="/instructor/settings" replace />;
-        }
+    if (user.role === 'instructor' && loading) {
+        return (
+            <div className="flex h-screen items-center justify-center bg-gray-50">
+                <Spinner label="Checking your account" />
+            </div>
+        );
     }
 
-    if (loading && user.role === 'instructor') {
-        return <div className="flex h-screen items-center justify-center">Loading...</div>;
+    // Unapproved instructors may only use the settings page and the student-side pages.
+    if (user.role === 'instructor' && location.pathname.startsWith('/instructor')
+        && location.pathname !== '/instructor/settings' && instructorStatus !== 'approved') {
+        return <Navigate to="/instructor/settings" replace />;
     }
 
     return <Outlet />;

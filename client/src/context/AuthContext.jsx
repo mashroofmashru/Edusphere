@@ -3,16 +3,20 @@ import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext(null);
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
+const readStoredUser = () => {
+  try {
     const storedUser = localStorage.getItem("auth_user");
     return storedUser ? JSON.parse(storedUser) : null;
-  });
+  } catch {
+    return null;
+  }
+};
 
-  const [token, setToken] = useState(() => {
-    return localStorage.getItem("auth_token");
-  });
-  const navigate = useNavigate()
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(readStoredUser);
+  const [token, setToken] = useState(() => localStorage.getItem("auth_token"));
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (user && token) {
       localStorage.setItem("auth_user", JSON.stringify(user));
@@ -20,22 +24,24 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user, token]);
 
-  const login = (userObj, token) => {
+  const login = (userObj, newToken) => {
     setUser(userObj);
-    setToken(token);
+    setToken(newToken);
   };
 
   const logout = () => {
     setUser(null);
+    setToken(null);
     localStorage.removeItem("auth_user");
     localStorage.removeItem("auth_token");
     navigate("/");
   };
 
-  const update = (userObj) => {
-    setUser(userObj);
-    alert("updated successfully")
-  }
+  // Merge partial changes (e.g. a new name) into the stored user without UI side effects.
+  const update = (changes) => {
+    setUser((prev) => (prev ? { ...prev, ...changes } : prev));
+  };
+
   return (
     <AuthContext.Provider
       value={{

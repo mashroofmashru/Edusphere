@@ -1,41 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../config/server';
 
+const LABELS = ['Active Students', 'Courses Available', 'Satisfaction Rate'];
+
 const StatsSection = () => {
-  const [stats, setStats] = useState([
-    { number: "50,000+", label: "Active Students" },
-    { number: "2,500+", label: "Courses Available" },
-    { number: "98%", label: "Satisfaction Rate" }
-  ]);
+  // null = still loading; never flash made-up numbers before the real ones arrive
+  const [stats, setStats] = useState(null);
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const { data } = await api.get('/users/stats');
-        if (data.success) {
-          setStats([
-            { number: `${data.data.activeStudents}+`, label: "Active Students" },
-            { number: `${data.data.coursesAvailable}+`, label: "Courses Available" },
-            { number: data.data.satisfactionRate, label: "Satisfaction Rate" }
-          ]);
-        }
-      } catch (error) {
-        console.error("Failed to fetch stats", error);
-      }
-    };
-    fetchStats();
+    api.get('/users/stats')
+      .then(({ data }) => {
+        if (!data.success) return;
+        setStats([
+          `${Number(data.data.activeStudents || 0).toLocaleString('en-IN')}+`,
+          `${Number(data.data.coursesAvailable || 0).toLocaleString('en-IN')}+`,
+          data.data.satisfactionRate || '—',
+        ]);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch stats', error);
+        setStats(['—', '—', '—']);
+      });
   }, []);
 
   return (
-    <section className="py-16 bg-gradient-to-r from-blue-50 to-blue-100">
+    <section className="py-16 bg-gradient-to-r from-blue-50 to-blue-100" aria-label="Platform statistics">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-          {stats.map((stat, index) => (
-            <div key={index} className="bg-white p-8 rounded-xl shadow-sm">
-              <div className="text-4xl font-bold text-blue-600 mb-2">
-                {stat.number}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-center">
+          {LABELS.map((label, index) => (
+            <div key={label} className="bg-white p-8 rounded-xl shadow-sm">
+              <div className="text-4xl font-bold text-blue-600 mb-2 h-10 flex items-center justify-center">
+                {stats ? stats[index] : <span className="block w-24 h-8 bg-blue-50 rounded animate-pulse"></span>}
               </div>
-              <div className="text-navy-900 font-medium">{stat.label}</div>
+              <div className="text-navy-900 font-medium">{label}</div>
             </div>
           ))}
         </div>

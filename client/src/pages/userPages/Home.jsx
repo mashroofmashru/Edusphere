@@ -1,35 +1,21 @@
-import React, { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import React from 'react'
 import Navbar from '../../components/Navbar/Navbar';
 import Banner from '../../components/Banner/Banner';
 import Featuredcourses from '../../components/FeaturedCourses/Featuredcourses';
 import StatsSection from '../../components/StatsSection/StatsSection';
 import Footer from '../../components/Footer/FooterHome';
 
-const Home = () => {
-  const { user, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isAuthenticated && user) {
-      if (user.role === 'admin') {
-        navigate('/admin', { replace: true });
-      } else if (user.role === 'instructor') {
-        navigate('/instructor', { replace: true });
-      }
-    }
-  }, [isAuthenticated, user, navigate]);
-
-  return (
-    <div className="bg-gray-50">
-      <Navbar />
+// Instructors and admins land on their dashboards after login, but can still browse the public site.
+const Home = () => (
+  <div className="bg-gray-50 min-h-screen flex flex-col">
+    <Navbar />
+    <main className="flex-1">
       <Banner />
       <Featuredcourses />
       <StatsSection />
-      <Footer />
-    </div>
-  )
-}
+    </main>
+    <Footer />
+  </div>
+);
 
 export default Home

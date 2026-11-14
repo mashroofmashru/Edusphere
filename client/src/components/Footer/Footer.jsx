@@ -1,11 +1,2 @@
-import React from "react";
-
-const Footer = () => (
-  <footer className="bg-[#162543] text-white py-10">
-    <div className="container mx-auto px-4 text-center text-sm text-blue-200">
-      <p>&copy; {new Date().getFullYear()} EduSphere. All rights reserved</p>
-    </div>
-  </footer>
-);
-
-export default Footer;
+// Kept for backwards compatibility: every page now uses the same full footer.
+export { default } from './FooterHome';

@@ -16,7 +16,9 @@
 .auth-card {
   position: relative;
   width: 100%;
-  height: 580px;
+  /* Tall enough for the sign-up side, but never taller than the viewport */
+  height: min(680px, calc(100dvh - 6rem));
+  min-height: 520px;
   transform-style: preserve-3d;
   transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
@@ -325,4 +327,86 @@
 
 .form-body::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+/* ---------- Additions: feedback, password toggle, role picker, small screens ---------- */
+.form-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  color: #b91c1c;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  padding: 0.625rem 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+.form-alert i { margin-top: 0.15rem; }
+
+.form-hint,
+.form-error-text {
+  font-size: 0.75rem;
+  margin-top: 0.35rem;
+}
+.form-hint { color: #64748b; }
+.form-error-text { color: #dc2626; font-weight: 500; }
+.input-container.has-error { border-color: #fca5a5; }
+
+.form-input.has-toggle { padding-right: 2.75rem; }
+.input-container { position: relative; }
+.password-toggle {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 6px;
+  color: #64748b;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.password-toggle:hover { color: var(--blue); background: #eff6ff; }
+
+.role-picker { border: 0; padding: 0; margin: 0 0 1.25rem; }
+.role-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.role-option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.15rem;
+  padding: 0.65rem 0.5rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  background: white;
+  transition: border-color 0.2s, background 0.2s;
+}
+.role-option input { position: absolute; opacity: 0; pointer-events: none; }
+.role-option i { color: #64748b; font-size: 1.1rem; }
+.role-option .role-title { font-weight: 600; font-size: 0.875rem; color: var(--navy); }
+.role-option .role-desc { font-size: 0.7rem; color: #64748b; }
+.role-option.selected { border-color: var(--blue); background: #eff6ff; }
+.role-option.selected i { color: var(--blue); }
+.role-option:has(input:focus-visible) { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+@media (max-width: 480px) {
+  .auth-card { height: calc(100dvh - 5rem); min-height: 480px; }
+  .form-header { padding: 1.25rem 1.25rem 1rem; }
+  .form-body { padding: 0 1.25rem 1.25rem; }
+  .form-content { padding-top: 1rem; }
+  .form-group { margin-bottom: 0.9rem; }
+  .logo-icon { font-size: 1.4rem; }
+  .logo-text, .form-title { font-size: 1.25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-card { transition: none; }
 }

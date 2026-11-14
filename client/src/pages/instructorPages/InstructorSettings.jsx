@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar from '../../components/Navbar/Sidebar';
+import InstructorLayout from '../../components/Navbar/Sidebar';
 import api from '../../config/server';
-import Toast from '../../components/Alert/Toast';
+import { useUI } from '../../context/UIContext';
+import { useAuth } from '../../context/AuthContext';
 
 const InstructorSettings = () => {
     const [profile, setProfile] = useState({
@@ -13,7 +14,8 @@ const InstructorSettings = () => {
         linkedin: ''
     });
     const [loading, setLoading] = useState(false);
-    const [notification, setNotification] = useState({ show: false, message: "", type: "success" });
+    const { toast } = useUI();
+    const { update } = useAuth();
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -41,43 +43,25 @@ const InstructorSettings = () => {
         setProfile({ ...profile, [e.target.name]: e.target.value });
     };
 
-    const getStatusBadge = (status) => {
-        if (status === 'approved') return <span className="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded ml-2">Verified Instructor</span>;
-        if (status === 'rejected') return <span className="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded ml-2">Application Rejected</span>;
-        return <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded ml-2">Pending Approval</span>;
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
             await api.put('/users/profile/update', profile);
-            setNotification({ show: true, message: "Profile updated successfully!", type: "success" });
-
-            // Update local storage user name if changed, to keep UI in sync immediately
-            const user = JSON.parse(localStorage.getItem('user'));
-            if (user) {
-                user.name = profile.name;
-                localStorage.setItem('user', JSON.stringify(user));
-            }
+            toast("Profile updated successfully!");
+            // Keep the navbar/sidebar name in sync immediately
+            update({ name: profile.name });
         } catch (error) {
-            setNotification({
-                show: true,
-                message: error.response?.data?.message || "Failed to update profile",
-                type: "error"
-            });
+            toast(error.response?.data?.message || "Failed to update profile", "error");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="flex h-screen bg-gray-50 font-sans">
-            <Sidebar />
-
-            <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        <InstructorLayout>
                 <header className="mb-8">
-                    <h1 className="text-3xl font-extrabold text-navy-900 tracking-tight flex items-center">
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-navy-900 tracking-tight flex items-center">
                         Instructor Settings
                     </h1>
 
@@ -115,13 +99,14 @@ const InstructorSettings = () => {
                     )}
                 </header>
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-3xl">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-8 max-w-3xl">
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-sm font-bold text-navy-900 mb-2">Full Name</label>
+                                <label htmlFor="settings-name" className="block text-sm font-bold text-navy-900 mb-2">Full Name</label>
                                 <input
                                     type="text"
+                                    id="settings-name"
                                     name="name"
                                     value={profile.name}
                                     onChange={handleChange}
@@ -130,9 +115,10 @@ const InstructorSettings = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-navy-900 mb-2">Email Address</label>
+                                <label htmlFor="settings-email" className="block text-sm font-bold text-navy-900 mb-2">Email Address</label>
                                 <input
                                     type="email"
+                                    id="settings-email"
                                     name="email"
                                     value={profile.email}
                                     disabled
@@ -142,10 +128,11 @@ const InstructorSettings = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-navy-900 mb-2">Professional Headline</label>
+                            <label htmlFor="settings-headline" className="block text-sm font-bold text-navy-900 mb-2">Professional Headline</label>
                             <input
                                 type="text"
-                                name="headline"
+                                id="settings-headline"
+                                    name="headline"
                                 value={profile.headline}
                                 onChange={handleChange}
                                 className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-navy-900"
@@ -154,9 +141,10 @@ const InstructorSettings = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-navy-900 mb-2">Bio</label>
+                            <label htmlFor="settings-bio" className="block text-sm font-bold text-navy-900 mb-2">Bio</label>
                             <textarea
-                                name="bio"
+                                id="settings-bio"
+                                    name="bio"
                                 value={profile.bio}
                                 onChange={handleChange}
                                 rows="4"
@@ -167,9 +155,10 @@ const InstructorSettings = () => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-sm font-bold text-navy-900 mb-2">Website URL</label>
+                                <label htmlFor="settings-website" className="block text-sm font-bold text-navy-900 mb-2">Website URL</label>
                                 <input
-                                    type="text"
+                                    type="url"
+                                    id="settings-website"
                                     name="website"
                                     value={profile.website}
                                     onChange={handleChange}
@@ -178,9 +167,10 @@ const InstructorSettings = () => {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-navy-900 mb-2">LinkedIn Profile</label>
+                                <label htmlFor="settings-linkedin" className="block text-sm font-bold text-navy-900 mb-2">LinkedIn Profile</label>
                                 <input
-                                    type="text"
+                                    type="url"
+                                    id="settings-linkedin"
                                     name="linkedin"
                                     value={profile.linkedin}
                                     onChange={handleChange}
@@ -202,15 +192,7 @@ const InstructorSettings = () => {
                         </div>
                     </form>
                 </div>
-            </main>
-
-            <Toast
-                show={notification.show}
-                message={notification.message}
-                type={notification.type}
-                onClose={() => setNotification({ ...notification, show: false })}
-            />
-        </div>
+        </InstructorLayout>
     );
 };
 

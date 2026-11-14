@@ -7,10 +7,18 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Full scale so every navy-* utility used in the app resolves.
         navy: {
-          900: '#0f172a',
-          800: '#1e293b',
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
           700: '#334155',
+          800: '#1e293b',
+          900: '#0f172a',
         },
         'dark-navy': '#1A335E',
         'light-card': '#FFFFFF',
@@ -24,6 +32,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Poppins', 'Inter', 'sans-serif'],
+        display: ['Cinzel', 'Georgia', 'serif'],
       },
     },
   },
